@@ -3,5 +3,7 @@
 class Calc {
 public:
     int k;
-    Calc() : k(10) {}
+    std::string linEquation;
+
+    Calc() : k(0) {}
 };

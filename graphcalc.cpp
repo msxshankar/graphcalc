@@ -2,8 +2,8 @@
 
 // Include libraries and files
 #include <iostream>
-#include "graphcalc.h"
-#include "funcDeclarations.h"
+#include "graphcalc.hpp"
+#include "funcDeclarations.hpp"
 
 int main () {
     Calc f;

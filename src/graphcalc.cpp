@@ -21,7 +21,7 @@ int welcome(Calc init) {
     std::cin >> init.linEquation;
     std::cout << init.linEquation;
 
-    std::regex expr("y=mx+c");
+    std::regex expr("y=mx\\+c");
     if (regex_match(init.linEquation, expr)) {
         std::cout << "Successful input" << std::endl;
     }

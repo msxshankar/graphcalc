@@ -7,6 +7,7 @@
 
 #include "graphcalc.hpp"
 #include "funcDeclarations.hpp"
+#include "graphs.hpp"
 
 int main () {
     // Basic class initialisation
@@ -24,6 +25,7 @@ int welcome(Calc init) {
     std::cout << "-> y=mx+c" << std::endl;
     std::cout << "> ";
 
+    // Accepts user input
     std::cin >> init.linEquation;
     std::cout << init.linEquation;
 
@@ -32,6 +34,10 @@ int welcome(Calc init) {
     std::regex expr("y=mx\\+c");
     if (regex_match(init.linEquation, expr)) {
         std::cout << "Successful input" << std::endl;
+
+        // Create new Graph class
+        Graph newGraph;
+        std::cout << newGraph.xMin << std::endl;
     }
 
     else {

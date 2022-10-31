@@ -18,7 +18,7 @@ public:
    double xCross;
    double yCross;
 
-   Graph() {};
+   Graph();
 
    Graph(double xMin, double yMin);
 

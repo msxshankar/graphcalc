@@ -3,3 +3,4 @@
 // Function declarations
 
 int welcome(Calc);
+int userInput();

@@ -22,27 +22,34 @@ int welcome(Calc init) {
     std::cout << "Welcome to GraphCalc!" << std::endl;
     std::cout << "To begin with, please enter an equation for GraphCalc to work on" << std::endl;
     std::cout << "Supported equations are shown below:" << std::endl;
-    std::cout << "-> y=mx+c" << std::endl;
+    std::cout << "1. y=mx+c" << std::endl;
     std::cout << "> ";
 
     // Accepts user input
     std::cin >> init.linEquation;
-    std::cout << init.linEquation;
 
     // Matches equation and performs validation
     // Can be implemented in a separate method
     std::regex expr("y=mx\\+c");
     if (regex_match(init.linEquation, expr)) {
-        std::cout << "Successful input" << std::endl;
+        userInput();
 
-        // Create new Graph class
-        Graph newGraph;
-        std::cout << newGraph.xMin << std::endl;
     }
 
     else {
         throw std::invalid_argument("Invalid input");
     }
 
+    return 0;
+}
+
+int userInput () {
+    // Ask for user input
+    double xMin, yMin;
+    std::cin >> xMin;
+    std::cin >> yMin;
+
+    // Create new Graph class
+    Graph newGraph (xMin, yMin);
     return 0;
 }

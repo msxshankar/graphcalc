@@ -6,8 +6,6 @@
 #include "graphs.hpp"
 
 // Constructor to accept minimum x and y values
-Graph::Graph(double xMin, double yMin) {
-   std::cout << "Enter range of values" << std::endl << "> ";
-   std::cin >> xMin;
-   std::cin >> yMin;
+Graph::Graph(double xMin, double yMin) : xMin(xMin), yMin(yMin) {
+   std::cout << xMin << yMin << std::endl;
 }

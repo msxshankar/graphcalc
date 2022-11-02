@@ -1,6 +1,6 @@
 // Class definitions
 
-class Calc {
+class Input {
 public:
     int k;
     std::string linEquation;

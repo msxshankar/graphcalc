@@ -3,7 +3,7 @@
 //
 #include <iostream>
 
-#include "graphs.hpp"
+#include "graph.hpp"
 
 // Constructor to accept minimum x and y values
 Graph::Graph(double xMin, double yMin) : xMin(xMin), yMin(yMin) {

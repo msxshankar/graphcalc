@@ -6,6 +6,6 @@
 #include "graph.hpp"
 
 // Constructor to accept minimum x and y values
-Graph::Graph(double xMin, double yMin) : xMin(xMin), yMin(yMin) {
-   std::cout << xMin << yMin << std::endl;
+Graph::Graph(double xMin, double yMin, double increment) : xMin(xMin), yMin(yMin), increment(increment) {
+   std::cout << xMin << yMin << increment << std::endl;
 }

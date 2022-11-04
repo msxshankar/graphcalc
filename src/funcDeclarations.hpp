@@ -3,5 +3,5 @@
 // Function declarations
 
 int welcome(Input);
-int validation(string);
+int validation(Input);
 int userInput();

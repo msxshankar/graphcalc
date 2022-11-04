@@ -8,8 +8,9 @@
 #include "input.hpp"
 #include "funcDeclarations.hpp"
 #include "graph.hpp"
+//#include "linear.hpp"
 
-int main () {
+int main (int argc, char **argv) {
     // Input class initialisation
     Input init;
     welcome(init);
@@ -27,18 +28,17 @@ int welcome(Input init) {
 
     // Accepts user input and validates it
     std::cin >> init.linEquation;
-    validation(string init.linEquation);
+    return(validation(init));
 }
 
 // Validation on inputted string
-int validation (string equation) {
+int validation (Input init) {
     // Matches equation and performs validation
     // Can be implemented in a separate method
 
     std::regex expr("y=mx\\+c");
     if (regex_match(init.linEquation, expr)) {
         userInput();
-
     }
 
     else {
@@ -50,11 +50,16 @@ int validation (string equation) {
 
 int userInput () {
     // Ask for user input
-    double xMin, yMin;
+    double xMin, yMin, increment;
+    std::cout << "Enter range of x values to be shown > ";
     std::cin >> xMin;
-    std::cin >> yMin;
+    std::cout << "Enter increment > ";
+    std::cin >> increment;
+    //std::cin >> yMin;
 
     // Create new Graph class
-    Graph newGraph (xMin, yMin);
+    Graph newGraph (xMin, yMin, increment);
+    //Linear one;
+    //one.intercepts();
     return 0;
 }

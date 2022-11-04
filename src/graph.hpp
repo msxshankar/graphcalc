@@ -15,12 +15,13 @@ public:
    // Will be inherited by other types of graphs
    double xMin;
    double yMin;
+   double increment;
    double xCross;
    double yCross;
 
    Graph();
 
-   Graph(double xMin, double yMin);
+   Graph(double xMin, double yMin, double increment);
 
    //~Graph();
 };

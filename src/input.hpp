@@ -7,4 +7,6 @@ public:
     Input() {
         linEquation = "";
     }
+
+    std::string values();
 };

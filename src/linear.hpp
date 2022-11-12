@@ -11,9 +11,9 @@
 
 class Linear : public Graph{
 private:
-    double yIntercept;
-    double xIntercept;
-    double gradient;
+    //double yIntercept;
+    //double xIntercept;
+    //double gradient;
 
 public:
     double intercepts(double yIntercept, double xIntercept, double gradient);

@@ -28,7 +28,7 @@ int welcome(Input init) {
 
     // Accepts user input and validates it
     std::cin >> init.linEquation;
-    return(validation(init));
+    validation(init);
 }
 
 // Validation on inputted string
@@ -36,8 +36,10 @@ int validation (Input init) {
     // Matches equation and performs validation
     // Can be implemented in a separate method
 
-    std::regex expr("y=mx\\+c");
+    std::regex expr("y=[0-9]x\\+[0-9]");
+    //std::regex expr(/^[+-]?((\d+(\.\d*)?)|(\.\d+) ) $/x)
     if (regex_match(init.linEquation, expr)) {
+        init.values();
         userInput();
     }
 
@@ -50,12 +52,12 @@ int validation (Input init) {
 
 int userInput () {
     // Ask for user input
-    double xMin, yMin, increment;
-    std::cout << "Enter range of x values to be shown > ";
+    double xMin, xMax, yMin, increment;
+    std::cout << "Enter range of x values to be shown (min max) > ";
     std::cin >> xMin;
+    std::cin >> xMax;
     std::cout << "Enter increment > ";
     std::cin >> increment;
-    //std::cin >> yMin;
 
     // Create new Graph class
     Graph newGraph (xMin, yMin, increment);

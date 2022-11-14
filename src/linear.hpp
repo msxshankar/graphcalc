@@ -16,6 +16,7 @@ private:
     //double gradient;
 
 public:
+    Linear();
     double intercepts(double yIntercept, double xIntercept, double gradient);
 
 };

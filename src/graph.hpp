@@ -14,14 +14,15 @@ public:
    // Key graph attributes
    // Will be inherited by other types of graphs
    double xMin;
+   double xMax;
    double yMin;
    double increment;
    double xCross;
    double yCross;
 
-   Graph();
+   //Graph();
 
-   Graph(double xMin, double yMin, double increment);
+   Graph(double xMinInp, double xMaxInp, double incrementInp);
 
    //~Graph();
 };

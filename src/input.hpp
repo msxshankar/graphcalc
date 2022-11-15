@@ -8,5 +8,5 @@ public:
         linEquation = "";
     }
 
-    std::string values();
+    int values();
 };

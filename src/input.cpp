@@ -6,7 +6,9 @@
 #include <string>
 #include "input.hpp"
 
-std::string Input::values() {
-   std::cout << linEquation;
+int Input::values() {
+    int index = linEquation.find("x");
+    std::cout << index;
 
+    return index;
 }

@@ -39,6 +39,7 @@ int validation (Input init) {
     std::regex expr("y=[0-9]x\\+[0-9]");
     //std::regex expr(/^[+-]?((\d+(\.\d*)?)|(\.\d+) ) $/x)
     if (regex_match(init.linEquation, expr)) {
+        init.values();
         userInput();
     }
 
@@ -61,6 +62,6 @@ int userInput () {
     // Create new Graph class
     Graph newGraph (xMin, xMax, increment);
     std::cout << newGraph.xMin;
-    //one.intercepts();
+    //one.intercepts()
     return 0;
 }

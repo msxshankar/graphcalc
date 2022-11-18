@@ -7,9 +7,10 @@
 #endif //GRAPHCALC_LINEAR_HPP
 
 #include "graph.hpp"
+#include "input.hpp"
 // Inherits from graph class
 
-class Linear : public Graph{
+class Linear : public Graph, public Input {
 private:
     //double yIntercept;
     //double xIntercept;
@@ -17,6 +18,7 @@ private:
 
 public:
     Linear();
-    double intercepts(double yIntercept, double xIntercept, double gradient);
 
+    double intercepts(double yIntercept, double xIntercept, double gradient);
+    double coorindates();
 };

@@ -7,7 +7,8 @@
 #include "input.hpp"
 
 int Input::values() {
-    int index = linEquation.find("x");
+    int index = linEquation.find("=");
+
     std::cout << index;
 
     return index;

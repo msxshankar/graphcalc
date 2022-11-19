@@ -7,7 +7,7 @@
 #endif //GRAPHCALC_LINEAR_HPP
 
 #include "graph.hpp"
-#include "input.hpp"
+#include "menu.hpp"
 // Inherits from graph class
 
 class Linear : public Graph, public Input {

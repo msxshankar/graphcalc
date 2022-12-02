@@ -7,6 +7,7 @@
 #include <regex>
 
 #include "menu.hpp"
+#include "linear.hpp"
 
 // First screen displayed for user
 int Menu::welcome() {
@@ -32,7 +33,7 @@ int Menu::validation () {
 
     if (regex_match(linEquation, expr)) {
         //init.values();
-        userInput();
+        //userInput();
     }
 
     else {
@@ -41,7 +42,7 @@ int Menu::validation () {
 
     return 0;
 }
-int userInput () {
+int Menu::userInput () {
     // Ask for user input
     double xMin, xMax, yMin, increment;
     std::cout << "Enter range of x values to be shown (min max) > ";
@@ -55,7 +56,7 @@ int userInput () {
     std::cout << newGraph.xMin;
 
     Linear lin1;
-    lin1.coorindates();
+    //lin1.coorindates();
     //one.intercepts()
     return 0;
 }

@@ -20,7 +20,7 @@ public:
    double xCross;
    double yCross;
 
-   //Graph();
+   Graph() {};
 
    Graph(double xMinInp, double xMaxInp, double incrementInp);
 

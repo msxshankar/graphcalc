@@ -4,13 +4,14 @@
 
 #endif GRAPHCALC_MENU_HPP
 
+
 class Menu {
 
 public:
     std::string linEquation;
     double y, x, c;
 
-    Input() {
+    Menu() {
         linEquation = "";
         y = 1;
         x = 5;
@@ -20,4 +21,5 @@ public:
     int values();
     int welcome();
     int validation();
+    int userInput();
 };

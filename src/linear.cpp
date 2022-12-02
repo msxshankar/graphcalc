@@ -15,7 +15,7 @@ double Linear::intercepts(double yIntercept, double xIntercept, double gradient)
 
 // Vector of coorindates
 double Linear::coorindates() {
-    Input inp1;
+    //Input inp1;
 
     int minX = -10;
     int maxX = 10;

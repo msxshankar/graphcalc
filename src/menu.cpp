@@ -42,22 +42,29 @@ int Menu::validation () {
 
     return 0;
 }
-int Menu::userInput () {
+int Menu::linearUserInput () {
+
     // Ask for user input
-    double xMin, xMax, yMin, increment;
-    std::cout << "Enter range of x values to be shown (min max) > ";
-    std::cin >> xMin;
-    std::cin >> xMax;
-    std::cout << "Enter increment > ";
-    std::cin >> increment;
+    std::cout << "Please enter in the form: y = mx + c" << std::endl;
+    std::cout << "Enter y value > ";
+    std::cin >> y;
+    std::cout << "Enter m value > ";
+    std::cin >> m;
+    std::cout << "Enter c value > ";
+    std::cin >> c;
+
+    //std::cout << "Enter range of x values to be shown (min, max) > ";
+    //std::cout << "Enter increment > ";
 
     // Create new Graph class
+    /*
     Graph newGraph (xMin, xMax, increment);
     std::cout << newGraph.xMin;
+    */
 
+    // Calls Linear class methods
     Linear lin1;
-    //lin1.coorindates();
-    //one.intercepts()
+    lin1.intercepts(y, m, c);
     return 0;
 }
 

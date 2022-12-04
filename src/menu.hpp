@@ -9,17 +9,17 @@ class Menu {
 
 public:
     std::string linEquation;
-    double y, x, c;
+    double y, m, c;
 
     Menu() {
         linEquation = "";
-        y = 1;
-        x = 5;
-        c = 6;
+        y = 0;
+        m = 0;
+        c = 0;
     }
 
     int values();
     int welcome();
     int validation();
-    int userInput();
+    int linearUserInput();
 };

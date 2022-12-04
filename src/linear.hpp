@@ -18,6 +18,6 @@ private:
 public:
     Linear() {};
 
-    double intercepts(double yIntercept, double xIntercept, double gradient);
+    double intercepts(double y, double m, double c);
     double coorindates();
 };

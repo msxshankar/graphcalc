@@ -6,11 +6,10 @@
 
 #include "linear.hpp"
 
-double Linear::intercepts(double yIntercept, double xIntercept, double gradient) {
-    yIntercept = yIntercept;
-    xIntercept = (0-yIntercept) / gradient;
-
-    return yIntercept, xIntercept;
+double Linear::intercepts(double y, double m, double c) {
+    yIntercept = ((m*0) + c) / y;
+    xIntercept = ((y*0) - c) / m;
+    std::cout << yIntercept << xIntercept << std::endl;
 }
 
 // Vector of coorindates

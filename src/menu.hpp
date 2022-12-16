@@ -10,16 +10,20 @@ class Menu {
 public:
     std::string linEquation;
     double y, m, c;
+    int choiceNumber;
 
+    // Default constructor to initialise basic values
     Menu() {
         linEquation = "";
         y = 0;
         m = 0;
         c = 0;
+        choiceNumber = 0;
     }
 
-    int values();
+    // Method stubs - to be implemented at a later date
     int welcome();
-    int validation();
-    int linearUserInput();
+    int choice();
+    //int validation();
+    int showGraph();
 };

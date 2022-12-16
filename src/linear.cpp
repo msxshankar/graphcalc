@@ -9,7 +9,8 @@
 double Linear::intercepts(double y, double m, double c) {
     yIntercept = ((m*0) + c) / y;
     xIntercept = ((y*0) - c) / m;
-    std::cout << yIntercept << xIntercept << std::endl;
+    std::cout << "Vertical (y) intercept: " << yIntercept << std::endl;
+    std::cout << "Horizontal (x) intercept: " << xIntercept << std::endl;
 }
 
 // Vector of coorindates

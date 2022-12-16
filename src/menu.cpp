@@ -15,14 +15,17 @@ int Menu::welcome() {
     std::cout << "To begin with, please enter an equation for GraphCalc to work on" << std::endl;
     std::cout << "Supported equations are shown below:" << std::endl;
     std::cout << "1. Linear (please input in the form y=mx+c)" << std::endl;
-    std::cout << "Enter equation> ";
-
-    // Accepts user input and validates it
-    std::cin >> linEquation;
+    std::cout << "2. Exponential (please input in the form y=x^2+c)" << std::endl;
 
     return 0;
 }
 
+int Menu::choice() {
+    std::cout << "Please choose an option (1-2) > ";
+    std::cin >> choiceNumber;
+}
+
+/*
 // Validation on inputted string
 int Menu::validation () {
     // Matches equation and performs validation
@@ -42,36 +45,35 @@ int Menu::validation () {
 
     return 0;
 }
-int Menu::linearUserInput () {
+*/
 
-    // Ask for user input
-    std::cout << "Please enter in the form: y = mx + c" << std::endl;
-    std::cout << "Enter y value > ";
-    std::cin >> y;
-    std::cout << "Enter m value > ";
-    std::cin >> m;
-    std::cout << "Enter c value > ";
-    std::cin >> c;
+int Menu::showGraph () {
 
-    //std::cout << "Enter range of x values to be shown (min, max) > ";
-    //std::cout << "Enter increment > ";
+    // Determine which type of graph to calculate
+    switch (choiceNumber) {
+        case 1: {
+            std::cout << "Please enter in the form: y = mx + c" << std::endl;
+            std::cout << "Enter y value > ";
+            std::cin >> y;
+            std::cout << "Enter m value > ";
+            std::cin >> m;
+            std::cout << "Enter c value > ";
+            std::cin >> c;
 
-    // Create new Graph class
-    /*
-    Graph newGraph (xMin, xMax, increment);
-    std::cout << newGraph.xMin;
-    */
+            // Calls Linear class methods
+            Linear lin1;
+            lin1.intercepts(y, m, c);
+            break;
+        }
 
-    // Calls Linear class methods
-    Linear lin1;
-    lin1.intercepts(y, m, c);
-    return 0;
-}
+        case 2: {
+            std::cout << "Exponentials will be implemented at a later date!" << std::endl;
+            break;
+        }
 
-int Menu::values() {
-    int index = linEquation.find("=");
-
-    std::cout << index;
-
-    return index;
+        default: {
+            std::cout << "Number out of range!" << std::endl;
+            break;
+        }
+    }
 }

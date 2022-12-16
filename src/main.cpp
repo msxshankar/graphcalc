@@ -12,7 +12,9 @@ int main (int argc, char **argv) {
 
     // Call all methods
     init.welcome();
-    init.validation();
+    init.choice();
+    init.showGraph();
+    //init.validation();
 
 	return 0;
 }

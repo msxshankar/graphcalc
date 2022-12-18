@@ -8,12 +8,12 @@
 
 int main (int argc, char **argv) {
     // Input class initialisation
-    Menu init;
+    Menu menu;
 
     // Call all methods
-    init.welcome();
-    init.choice();
-    init.showGraph();
+    menu.welcome();
+    menu.choice();
+    menu.showGraph();
     //init.validation();
 
 	return 0;

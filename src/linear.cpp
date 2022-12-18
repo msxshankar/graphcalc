@@ -11,24 +11,33 @@ double Linear::intercepts(double y, double m, double c) {
     xIntercept = ((y*0) - c) / m;
     std::cout << "Vertical (y) intercept: " << yIntercept << std::endl;
     std::cout << "Horizontal (x) intercept: " << xIntercept << std::endl;
+
+    return 0;
 }
 
 // Vector of coorindates
-double Linear::coorindates() {
-    //Input inp1;
+double Linear::coorindates(double y, double m, double c) {
 
-    int minX = -10;
+    int minX = 0;
     int maxX = 10;
 
-    std::vector<double> coordinates;
-
+    // Add points to vector
     for (int i = minX ; i < maxX ; i++ ) {
-       coordinates.push_back(i);
+       if (i % 2 == 1) {
+           coordinates.push_back((m*i)+c);
+       }
+       else {
+           coordinates.push_back(i);
+       }
     }
 
-    for (auto j: coordinates) {
-        std::cout << j << ' ';
+    for (int j: coordinates) {
+        if (j % 2 == 0) {
+            std::cout << j << ',';
+        }
+        else {
+            std::cout << j << ' ';
+        }
     }
-
     return 0;
 }

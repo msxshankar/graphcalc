@@ -14,10 +14,11 @@ private:
     double yIntercept;
     double xIntercept;
     double gradient;
+    std::vector<double> coordinates;
 
 public:
     Linear() {};
 
     double intercepts(double y, double m, double c);
-    double coorindates();
+    double coorindates(double y, double m, double c);
 };

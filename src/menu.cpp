@@ -63,6 +63,7 @@ int Menu::showGraph () {
             // Calls Linear class methods
             Linear lin1;
             lin1.intercepts(y, m, c);
+            lin1.coorindates(y, m, c);
             break;
         }
 

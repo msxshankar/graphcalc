@@ -6,11 +6,24 @@
 
 #include "linear.hpp"
 
+// Below methods assume inputted equation is in the form y = mx + c
+
+// Calculates intercepts
 double Linear::intercepts(double y, double m, double c) {
     yIntercept = ((m*0) + c) / y;
     xIntercept = ((y*0) - c) / m;
+    std::cout << "STATISTICS:" << std::endl;
     std::cout << "Vertical (y) intercept: " << yIntercept << std::endl;
     std::cout << "Horizontal (x) intercept: " << xIntercept << std::endl;
+
+    return 0;
+}
+
+// Finds perpendicular line to inputted equation
+double Linear::perpendicular(double y, double m, double c) {
+    gradient = m;
+    perpengradient = (1 / gradient) * -1;
+    std::cout << "Perpendicular equation: y = " << perpengradient << "x +" << c << std::endl;
 
     return 0;
 }
@@ -31,6 +44,7 @@ double Linear::coorindates(double y, double m, double c) {
        }
     }
 
+    std::cout << "COORDINATES:" << std::endl;
     for (int j: coordinates) {
         if (j % 2 == 0) {
             std::cout << j << ',';

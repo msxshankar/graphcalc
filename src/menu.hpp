@@ -2,7 +2,7 @@
 
 #define GRAPHCALC_MENU_HPP
 
-#endif GRAPHCALC_MENU_HPP
+#endif //GRAPHCALC_MENU_HPP
 
 
 class Menu {

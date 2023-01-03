@@ -5,7 +5,7 @@
 #ifndef GRAPHCALC_GRAPHS_HPP
 #define GRAPHCALC_GRAPHS_HPP
 
-#endif GRAPHCALC_GRAPHS_HPP
+#endif //GRAPHCALC_GRAPHS_HPP
 
 // Class containing all graphs
 class Graph {

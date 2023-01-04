@@ -36,3 +36,8 @@
 
 # CMake
 cmake-build-debug/
+cmake-build-release/
+
+# Debian packaging
+usr/bin/
+*.deb

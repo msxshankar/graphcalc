@@ -2,11 +2,14 @@
 
 // Include libraries and files
 #include <iostream>
-#include <stdexcept>
 
 #include "main.hpp"
 #include "menu.hpp"
-//#include "funcDeclarations.hpp"
+
+// namespace for global variables
+namespace global {
+    const std::string version = "0.9 beta";
+}
 
 int main (int argc, char *argv[]) {
 
@@ -26,13 +29,23 @@ int main (int argc, char *argv[]) {
 	return 0;
 }
 
+// Accepts command line arguments
 void argumentParser (char *argv[]) {
-    std::cout << argv[1];
+    const std::string argument = argv[1];
 
-    if (argv[1] == "-h" || argv[1] == "--help") {
-        std::cout << "usage: graphcalc [-h]"
-                  << "optional arguments:"
-                  << "-h, --help        show help message"
+    if (argument == "-h" || argument == "--help") {
+        std::cout << "usage: graphcalc [-h] [-v]"
+                  << "optional arguments:" << std::endl
+                  << "-h, --help        show help message" << std::endl
+                  << "-v, --version     show version number" << std::endl
+                  << "Program usage:" << std::endl
+                  << "Run the program and enter equation. Statistics of graph will be displayed" << std::endl
                   << std::endl;
+        exit(ARGUMENT);
+    }
+
+    else if (argument == "-v" || argument == "--version") {
+        std::cout << "graphcalc version " << global::version << std::endl;
+        exit(VERSION);
     }
 }

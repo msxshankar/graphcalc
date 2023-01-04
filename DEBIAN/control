@@ -1,0 +1,5 @@
+Package: graphcalc
+Version: 0.9
+Architecture: amd64
+Maintainer: msxshankar <www.github.com/msxshankar>
+Description: Terminal-based graphing calculator

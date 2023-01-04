@@ -23,4 +23,5 @@ public:
     double intercepts(double y, double m, double c);
     double coorindates(double y, double m, double c);
     double perpendicular(double y, double m, double c);
+    double lineofbestfit();
 };

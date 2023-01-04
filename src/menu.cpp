@@ -65,6 +65,7 @@ int Menu::showGraph () {
             lin1.intercepts(y, m, c);
             lin1.perpendicular(y, m, c);
             lin1.coorindates(y, m, c);
+            lin1.lineofbestfit();
             break;
         }
 

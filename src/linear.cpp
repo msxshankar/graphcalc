@@ -55,3 +55,17 @@ double Linear::coorindates(double y, double m, double c) {
     }
     return 0;
 }
+
+// Calculates line of best fit using normal equations
+double Linear::lineofbestfit() {
+    int row = 2, column = 2;
+
+    std::vector<std::vector<double>> b;
+    b.resize(column, std::vector<double>(row));
+    b[0][1] = 3;
+    std::cout << b[0][1];
+
+   return 0;
+
+
+}

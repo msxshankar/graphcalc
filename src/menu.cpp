@@ -23,6 +23,8 @@ int Menu::welcome() {
 int Menu::choice() {
     std::cout << "Please choose an option (1-2) > ";
     std::cin >> choiceNumber;
+
+    return 0;
 }
 
 /*
@@ -78,4 +80,5 @@ int Menu::showGraph () {
             break;
         }
     }
+    return 0;
 }

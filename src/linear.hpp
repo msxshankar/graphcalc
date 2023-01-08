@@ -6,11 +6,12 @@
 
 #endif //GRAPHCALC_LINEAR_HPP
 
-#include "graph.hpp"
-
 // Inherits from graph class
-class Linear : public Graph {
+class Linear {
 private:
+    double y;
+    double x;
+    double c;
     double yIntercept;
     double xIntercept;
     double gradient;
@@ -19,6 +20,8 @@ private:
 
 public:
     Linear() {};
+
+    ~Linear() {};
 
     double intercepts(double y, double m, double c);
     double coorindates(double y, double m, double c);

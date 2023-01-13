@@ -1,14 +1,21 @@
-//
-// Created by mayur on 02/11/22.
-//
+// Created by msxshankar on 02/11/22.
+
 #ifndef GRAPHCALC_LINEAR_HPP
 #define GRAPHCALC_LINEAR_HPP
 
 #endif //GRAPHCALC_LINEAR_HPP
 
+// Linked list used to store equation
+struct equation {
+    double coefficient;
+    double power;
+    equation *next;
+};
+
 // Inherits from graph class
 class Linear {
 private:
+    equation *head;
     double y;
     double x;
     double c;
@@ -19,7 +26,7 @@ private:
     std::vector<double> coordinates;
 
 public:
-    Linear() {};
+    Linear();
 
     ~Linear() {};
 

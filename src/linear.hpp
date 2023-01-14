@@ -5,17 +5,11 @@
 
 #endif //GRAPHCALC_LINEAR_HPP
 
-// Linked list used to store equation
-struct equation {
-    double coefficient;
-    double power;
-    equation *next;
-};
+#include "graph.hpp"
 
 // Inherits from graph class
-class Linear {
+class Linear : public Graph {
 private:
-    equation *head;
     double y;
     double x;
     double c;

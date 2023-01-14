@@ -7,14 +7,11 @@ private:
 
 public:
 
-    // Default constructor to initialise basic values
-    Menu() {
-        choiceNumber = 0;
-    }
+    // Constructor to initialise basic values
+    Menu() : choiceNumber(0) {};
 
-    // Method stubs - to be implemented at a later date
+    // Methods for menu system
     void welcome();
     int choice();
-    //int validation();
     int showGraph();
 };

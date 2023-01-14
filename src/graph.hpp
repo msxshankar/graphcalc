@@ -1,28 +1,35 @@
-//
-// Created by mayur on 23/10/22.
-//
+// Created by mxshankar on 23/10/22.
 
 #ifndef GRAPHCALC_GRAPHS_HPP
 #define GRAPHCALC_GRAPHS_HPP
 
 #endif //GRAPHCALC_GRAPHS_HPP
 
-// Class containing all graphs
+#define SUCCESS 0
+#define FAILURE 1
+
+#include <memory>
+#include <list>
+
+// Linked list used to store equation
+struct equation {
+    double coefficient;
+    double power;
+};
+
+// Class containing graph equations
 class Graph {
 
+protected:
+    // Linked list to store equation
+    std::list<equation> equationList;
+   //std::shared_ptr<struct equation> head;
+
 public:
-   // Key graph attributes
-   // Will be inherited by other types of graphs
-   double xMin;
-   double xMax;
-   double yMin;
-   double increment;
-   double xCross;
-   double yCross;
+   int stop;
 
-   Graph() {};
+   Graph();
 
-   Graph(double xMinInp, double xMaxInp, double incrementInp);
-
+   int input();
    //~Graph();
 };

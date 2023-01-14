@@ -28,36 +28,29 @@ int Menu::choice() {
     // validate input
     while (std::cin.fail() || choiceNumber > 2 || choiceNumber < 1) {
         std::cout << "Please enter a valid choice (1-2) > ";
-        std::cin.clear();
-        std::cin.ignore(256,'\n');
+        //std::cin.clear();
+        //std::cin.ignore(256,'\n');
         std::cin >> choiceNumber;
     }
-    return choiceNumber;
 }
-
-    return 0;
-}
-
-        throw std::invalid_argument("Invalid input");
 
 int Menu::showGraph () {
 
     // Determine which type of graph to calculate
     switch (choiceNumber) {
         case 1: {
-            std::cout << "Please enter in the form: y = mx + c" << std::endl;
-            std::cout << "Enter y value > ";
-            std::cin >> linear::y;
-            std::cout << "Enter m value > ";
-            std::cin >> m;
-            std::cout << "Enter c value > ";
-            std::cin >> c;
 
             // Calls Linear class methods
             Linear lin1;
-            lin1.intercepts(y, m, c);
-            lin1.perpendicular(y, m, c);
-            lin1.coorindates(y, m, c);
+            lin1.input();
+            std::cout << "Please enter in the form: y = mx + c" << std::endl;
+            std::cout << "Enter y value > ";
+            std::cout << "Enter m value > ";
+            std::cout << "Enter c value > ";
+
+            //lin1.intercepts(y, m, c);
+            //lin1.perpendicular(y, m, c);
+            //lin1.coorindates(y, m, c);
             break;
         }
 

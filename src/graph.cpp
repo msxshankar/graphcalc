@@ -30,17 +30,32 @@ int Graph::input() {
         }
     }
 
-    // Validate user input
+    // Output inputted equation
     auto iter = equationList.begin();
-    //int count = 0;
+    int count = 1;
 
     std::cout << "Inputted equation: ";
     while (iter != equationList.end()) {
-        // input tenary operator
-        std::cout << iter->coefficient << "x^" << iter->power << " + ";
-        iter++;
+        std::cout << iter->coefficient << "x^" << iter->power << ((count == equationList.size()) ? "\n" : " + ");
+        iter++, count++;
     }
 
+    // Minimum and maximum range
+    std::cout << "Next, enter minimum and maximum values of x (min max): ";
+    std::cin >> min >> max;
 
     return SUCCESS;
 }
+
+// Simplifies inputted equation
+/*
+int Graph::simplify() {
+
+    auto iter = equationList.begin();
+
+    while (iter != equationList.end()) {
+
+    }
+    return SUCCESS;
+}
+*/

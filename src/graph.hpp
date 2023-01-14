@@ -27,11 +27,15 @@ protected:
     // Unique pointer to each node in linked list
     std::unique_ptr<struct equation> ptr;
 
+    // Min and max range
+    double min, max;
+
 public:
    int stopCondition;
 
    Graph();
-   //~Graph();
 
    int input();
+   //int simplify();
+
 };

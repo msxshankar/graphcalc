@@ -44,16 +44,10 @@ int Menu::showGraph () {
             // Calls Linear class methods
             Linear lin1;
             lin1.input();
-            /*
-            std::cout << "Please enter in the form: y = mx + c" << std::endl;
-            std::cout << "Enter y value > ";
-            std::cout << "Enter m value > ";
-            std::cout << "Enter c value > ";
-            */
-            //lin1.intercepts(y, m, c);
-            //lin1.perpendicular(y, m, c);
-            //lin1.coorindates(y, m, c);
-            //break;
+            lin1.intercepts();
+            lin1.perpendicular();
+            lin1.coorindates();
+            break;
         }
 
         case 2: {

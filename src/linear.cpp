@@ -3,15 +3,18 @@
 //
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 #include "linear.hpp"
 
 // Below methods assume inputted equation is in the form y = mx + c
 
 // Calculates intercepts
-double Linear::intercepts(double y, double m, double c) {
-    yIntercept = ((m*0) + c) / y;
-    xIntercept = ((y*0) - c) / m;
+double Linear::intercepts() {
+    auto iter = equationList.begin();
+
+    yIntercept = ((iter++->coefficient*0) + iter->coefficient);
+    xIntercept = (0 - iter-- ->coefficient) / iter->coefficient;
     std::cout << "STATISTICS:" << std::endl;
     std::cout << "Vertical (y) intercept: " << yIntercept << std::endl;
     std::cout << "Horizontal (x) intercept: " << xIntercept << std::endl;
@@ -20,8 +23,10 @@ double Linear::intercepts(double y, double m, double c) {
 }
 
 // Finds perpendicular line to inputted equation
-double Linear::perpendicular(double y, double m, double c) {
-    gradient = m;
+double Linear::perpendicular() {
+    auto iter = equationList.begin();
+
+    gradient = iter->coefficient;
     perpengradient = (1 / gradient) * -1;
     std::cout << "Perpendicular equation: y = " << perpengradient << "x +" << c << std::endl;
 
@@ -29,28 +34,24 @@ double Linear::perpendicular(double y, double m, double c) {
 }
 
 // Vector of coorindates
-double Linear::coorindates(double y, double m, double c) {
+double Linear::coorindates() {
 
-    int minX = 0;
-    int maxX = 10;
+    auto iter = equationList.begin();
 
     // Add points to vector
-    for (int i = minX ; i < maxX ; i++ ) {
-       if (i % 2 == 1) {
-           coordinates.push_back((m*i)+c);
-       }
-       else {
-           coordinates.push_back(i);
-       }
+    // Be careful with typecasting
+    for (int i = (int) min; i < (int) max ; i++ ) {
+       coordinates.push_back(i);
+       coordinates.push_back((iter ->coefficient*i) + iter->coefficient);
     }
 
     std::cout << "COORDINATES:" << std::endl;
-    for (int j: coordinates) {
+    for (int j = 0; j < coordinates.size(); j++) {
         if (j % 2 == 0) {
-            std::cout << j << ',';
+            std::cout << coordinates[j] << ',';
         }
         else {
-            std::cout << j << ' ';
+            std::cout << coordinates[j] << ' ';
         }
     }
     return 0;

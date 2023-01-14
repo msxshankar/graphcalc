@@ -11,7 +11,7 @@
 #include <memory>
 #include <list>
 
-// Linked list used to store equation
+// Node used to store coefficient and power
 struct equation {
     double coefficient;
     double power;
@@ -22,14 +22,16 @@ class Graph {
 
 protected:
     // Linked list to store equation
-    std::list<equation> equationList;
-   //std::shared_ptr<struct equation> head;
+    std::list<struct equation> equationList;
+
+    // Unique pointer to each node in linked list
+    std::unique_ptr<struct equation> ptr;
 
 public:
-   int stop;
+   int stopCondition;
 
    Graph();
+   //~Graph();
 
    int input();
-   //~Graph();
 };

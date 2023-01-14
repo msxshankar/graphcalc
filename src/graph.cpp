@@ -5,43 +5,42 @@
 
 #include "graph.hpp"
 
-// Constructor to accept minimum x and y values
-//Graph::Graph(double xMin, double xMax, double increment) : xMin(xMin), xMax(xMax), increment(increment) {
-//}
-/*
-Graph::Graph(double xMinInp, double xMaxInp, double incrementInp) {
-    xMin = xMinInp;
-    xMax = xMaxInp;
-    increment = incrementInp;
-}
-*/
-
 // Constructor
-Graph::Graph() : stop(0) {
-   //head = std::make_shared<struct equation>();
-}
+Graph::Graph() : stopCondition(0), ptr(std::make_unique<struct equation>()) {}
 
+// Adding stdin values to linked list
 int Graph::input() {
 
     std::cout << "Please enter equation. Start with largest powers of x" << std::endl;
-    while (true) {
-        std::cout << "Enter power of x: " << std::endl;
-        equationList.push_back(equation());
-        equationList++;
+    std::cout << "For example: y = ax^2 + bx + c" << std::endl;
 
-        std::cin >> equationList[0].power = 2;
-        std::cout << "Enter coefficient: " << std::endl;
-        //std::cin >> equationList.push_back(struct equation);
-        std::cout << "Enter 1 to continue, 0 to stop" << std::endl;
-        std::cin >> stop;
-        if (stop == 0) {
+    while (true) {
+        std::cout << "Enter coefficient: ";
+        std::cin >> ptr->coefficient;
+
+        std::cout << "Enter power of x: ";
+        std::cin >> ptr->power;
+
+        equationList.push_back(*ptr);
+
+        std::cout << "Enter 1 to continue, 0 to stop: ";
+        std::cin >> stopCondition;
+        if (stopCondition == 0) {
             break;
         }
-        else {
-           //head->next = std::make_shared<struct equation>();
-           //head = head->next;
-        }
     }
+
+    // Validate user input
+    auto iter = equationList.begin();
+    //int count = 0;
+
+    std::cout << "Inputted equation: ";
+    while (iter != equationList.end()) {
+        // input tenary operator
+        std::cout << iter->coefficient << "x^" << iter->power << " + ";
+        iter++;
+    }
+
 
     return SUCCESS;
 }

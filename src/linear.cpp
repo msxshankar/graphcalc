@@ -6,11 +6,6 @@
 
 #include "linear.hpp"
 
-Linear::Linear() {
-    head->coefficient = 0;
-}
-
-
 // Below methods assume inputted equation is in the form y = mx + c
 
 // Calculates intercepts

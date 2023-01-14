@@ -5,6 +5,8 @@
 
 #endif //GRAPHCALC_LINEAR_HPP
 
+#include <vector>
+
 #include "graph.hpp"
 
 // Inherits from graph class
@@ -20,7 +22,7 @@ private:
     std::vector<double> coordinates;
 
 public:
-    Linear();
+    //Linear();
 
     ~Linear() {};
 

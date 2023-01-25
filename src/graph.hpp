@@ -30,6 +30,9 @@ protected:
     // Min and max range
     double min, max;
 
+    // Inputs
+    std::string entry;
+
 public:
    int stopCondition;
 

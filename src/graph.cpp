@@ -11,20 +11,31 @@ Graph::Graph() : stopCondition(0), ptr(std::make_unique<struct equation>()) {}
 // Adding stdin values to linked list
 int Graph::input() {
 
-    std::cout << "Please enter equation. Start with largest powers of x" << std::endl;
+    std::cout << "Please enter coefficients and powers of equation. Start with largest powers of x" << std::endl;
     std::cout << "For example: y = ax^2 + bx + c" << std::endl;
+    std::cout << "If you've finished inputting, type done" << std::endl;
 
     while (true) {
         std::cout << "Enter coefficient: ";
         std::cin >> ptr->coefficient;
+        while (std::cin.fail()) {
+            std::cout << "Invalid input, please try again" << std::endl;
+            std::cin.ignore(255);
+            std::cin.clear();
+            std::cin >> ptr->coefficient;
+        }
 
         std::cout << "Enter power of x: ";
+        if (entry == "done" || entry == "DONE") {
+            break;
+        }
         std::cin >> ptr->power;
 
         equationList.push_back(*ptr);
 
         std::cout << "Enter 1 to continue, 0 to stop: ";
         std::cin >> stopCondition;
+
         if (stopCondition == 0) {
             break;
         }

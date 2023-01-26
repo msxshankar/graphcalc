@@ -1,5 +1,8 @@
 // Class for graphcalc menu system
 
+// Terminal colours
+enum colours {};
+
 class Menu {
 
 private:

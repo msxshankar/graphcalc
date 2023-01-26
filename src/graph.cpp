@@ -6,7 +6,7 @@
 #include "graph.hpp"
 
 // Constructor
-Graph::Graph() : stopCondition(0), ptr(std::make_unique<struct equation>()) {}
+Graph::Graph() : ptr(std::make_unique<struct equation>()) {}
 
 // Adding stdin values to linked list
 int Graph::input() {
@@ -17,28 +17,45 @@ int Graph::input() {
 
     while (true) {
         std::cout << "Enter coefficient: ";
-        std::cin >> ptr->coefficient;
-        while (std::cin.fail()) {
-            std::cout << "Invalid input, please try again" << std::endl;
-            std::cin.ignore(255);
-            std::cin.clear();
-            std::cin >> ptr->coefficient;
+        std::cin >> entry;
+
+        if (entry == "done" || entry == "DONE") {
+           break;
+        }
+        else {
+           try {
+               ptr->coefficient = std::stod(entry);
+           }
+
+           // Invalid inputs
+           catch (std::invalid_argument&) {
+              std::cout << "Invalid input, please try again" << std::endl;
+              std::cin.clear();
+              continue;
+           }
         }
 
         std::cout << "Enter power of x: ";
-        if (entry == "done" || entry == "DONE") {
-            break;
-        }
-        std::cin >> ptr->power;
+        std::cin >> entry;
 
+        if (entry == "done" || entry == "DONE") {
+           std::cout << "Power will be zero" << std::endl;
+           break;
+        }
+        else {
+            try {
+                ptr->power = std::stod(entry);
+            }
+
+            catch (std::invalid_argument&) {
+                std::cout << "Invalid input. Please try again" << std::endl;
+                std::cin.clear();
+                continue;
+            }
+        }
+        // Add to linked list
         equationList.push_back(*ptr);
 
-        std::cout << "Enter 1 to continue, 0 to stop: ";
-        std::cin >> stopCondition;
-
-        if (stopCondition == 0) {
-            break;
-        }
     }
 
     // Output inputted equation
@@ -59,14 +76,24 @@ int Graph::input() {
 }
 
 // Simplifies inputted equation
-/*
 int Graph::simplify() {
 
     auto iter = equationList.begin();
 
-    while (iter != equationList.end()) {
+    // Order list
+    Graph::quicksort();
 
+    while (iter != equationList.end()) {
+        // Compare powers of adjacent terms
+        if (iter++->power == iter->power) {
+            // Add previous coefficient
+            iter-- ->coefficient += iter->coefficient;
+        }
     }
     return SUCCESS;
 }
-*/
+
+// Quick sort to sort list in ascending order
+std::list<struct equation> quicksort () {
+
+}

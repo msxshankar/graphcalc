@@ -34,11 +34,9 @@ protected:
     std::string entry;
 
 public:
-   int stopCondition;
-
    Graph();
 
    int input();
-   //int simplify();
-
+   int simplify();
+   std::list<struct equation> quicksort();
 };

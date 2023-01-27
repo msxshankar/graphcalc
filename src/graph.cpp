@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "graph.hpp"
+#include "colour.hpp"
 
 // Constructor
 Graph::Graph() : ptr(std::make_unique<struct equation>()) {}
@@ -11,12 +12,12 @@ Graph::Graph() : ptr(std::make_unique<struct equation>()) {}
 // Adding stdin values to linked list
 int Graph::input() {
 
-    std::cout << "Please enter coefficients and powers of equation. Start with largest powers of x" << std::endl;
+    std::cout << BOLD("Please enter coefficients and powers of equation. Start with largest powers of x") << std::endl;
     std::cout << "For example: y = ax^2 + bx + c" << std::endl;
     std::cout << "If you've finished inputting, type done" << std::endl;
 
     while (true) {
-        std::cout << "Enter coefficient: ";
+        std::cout << BOLD("Enter coefficient (or type done if finished): ");
         std::cin >> entry;
 
         if (entry == "done" || entry == "DONE") {
@@ -29,13 +30,13 @@ int Graph::input() {
 
            // Invalid inputs
            catch (std::invalid_argument&) {
-              std::cout << "Invalid input, please try again" << std::endl;
+              std::cout << FGRED("Invalid input, please try again") << std::endl;
               std::cin.clear();
               continue;
            }
         }
 
-        std::cout << "Enter power of x: ";
+        std::cout << BOLD("Enter power of x: ");
         std::cin >> entry;
 
         if (entry == "done" || entry == "DONE") {
@@ -48,7 +49,7 @@ int Graph::input() {
             }
 
             catch (std::invalid_argument&) {
-                std::cout << "Invalid input. Please try again" << std::endl;
+                std::cout << FGRED("Invalid input. Please try again") << std::endl;
                 std::cin.clear();
                 continue;
             }
@@ -81,7 +82,7 @@ int Graph::simplify() {
     auto iter = equationList.begin();
 
     // Order list
-    Graph::quicksort();
+    //Graph::quicksort();
 
     while (iter != equationList.end()) {
         // Compare powers of adjacent terms

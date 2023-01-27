@@ -6,6 +6,7 @@
 #include <cmath>
 
 #include "linear.hpp"
+#include "matplot/matplot.h"
 
 // Below methods assume inputted equation is in the form y = mx + c
 
@@ -54,5 +55,17 @@ double Linear::coorindates() {
             std::cout << coordinates[j] << ' ';
         }
     }
+    return 0;
+}
+
+int Linear::draw() {
+   //matplot::plot(coordinates, coordinates);
+   //matplot::show();
+
+    std::vector<double> Y = {16, 5, 9, 4};
+
+    matplot::plot(Y);
+
+    matplot::show();
     return 0;
 }

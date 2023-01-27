@@ -18,6 +18,7 @@ Its aim is to map complex graphs and find various statistics about them.
 Make sure you have these dependencies installed:
 * CMake
 * Ninja
+* Gnuplot 
 
 Then clone the repository
 ```

@@ -29,4 +29,5 @@ public:
     double intercepts();
     double coorindates();
     double perpendicular();
+    int draw();
 };

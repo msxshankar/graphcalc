@@ -7,18 +7,18 @@
 #endif //GRAPHCALC_MENU_HPP
 
 #include <iostream>
-#include <string>
 
 #include "menu.hpp"
+#include "colour.hpp"
 #include "linear.hpp"
 
 // First screen displayed for user
 void Menu::welcome() {
-    std::cout << "Welcome to GraphCalc!" << std::endl;
+    std::cout << FGRED("Welcome to GraphCalc!") << std::endl;
     std::cout << "To begin with, please enter an equation for GraphCalc to work on" << std::endl;
     std::cout << "Supported equations are shown below:" << std::endl;
     std::cout << "1. Linear (please input in the form y=mx+c)" << std::endl;
-    std::cout << "2. Exponential (please input in the form y=x^2+c)" << std::endl;
+    std::cout << "2. Polynomial (please input in the form y=x^2+c)" << std::endl;
 }
 
 int Menu::choice() {
@@ -47,6 +47,7 @@ int Menu::showGraph () {
             lin1.intercepts();
             lin1.perpendicular();
             lin1.coorindates();
+            lin1.draw();
             break;
         }
 

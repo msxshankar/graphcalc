@@ -10,7 +10,7 @@ file(GLOB SOURCES "src/*.cpp")
 add_subdirectory(matplotplusplus)
 
 # Executable and dependencies
-add_executable(graphcalc ${SOURCES} src/colour.hpp)
+add_executable(graphcalc ${SOURCES})
 
 # Link matplotplusplus library
 target_link_libraries(graphcalc PUBLIC matplot)

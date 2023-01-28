@@ -48,4 +48,10 @@ void argumentParser (char *argv[]) {
         std::cout << "graphcalc version " << global::version << std::endl;
         exit(VERSION);
     }
+
+    else {
+        std::cout << "Unknown argument: " << argument << std::endl;
+        std::cout << "Use -h or --help for help" << std::endl;
+        exit(FAIL);
+    }
 }

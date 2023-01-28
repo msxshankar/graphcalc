@@ -4,10 +4,10 @@ WIP
 
 # Introduction
 Graphcalc is a personal University project that I am working on. It combines skills from various modules that I am doing in my second year.
-Its aim is to map complex graphs and find various statistics about them.
+Its aim is to map graphs and find various statistics about them.
 
 ## Key Goals
-* A simple and clear to use interface 
+* A simple terminal interface 
 * Efficient memory and resource management
 * Modular and extendable
 
@@ -34,4 +34,19 @@ cd build && ninja
 Finally, run the program
 ```
 ./graphcalc
+```
+
+# Testing
+Unit tests is currently being implemented via CTest. You can run them as follows:
+
+Go into the cmake build directory, then run ctest
+```
+cd cmake-build-debug/
+ctest
+```
+
+Some useful flags are listed below
+```
+ctest --verbose (print more details)
+ctest --parallel (run tests in parallel)
 ```

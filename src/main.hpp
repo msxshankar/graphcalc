@@ -6,6 +6,7 @@
 
 #define ARGUMENT 0
 #define VERSION 0
+#define FAIL 1
 
 // Function declarations
 void argumentParser(char *argv[]);

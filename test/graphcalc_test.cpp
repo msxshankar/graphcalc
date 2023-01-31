@@ -2,9 +2,12 @@
 // testing all key functions
 
 #include <iostream>
+#include <memory>
+
 #include "graphcalc_test.hpp"
 #include "../src/main.hpp"
 #include "../src/menu.hpp"
+#include "../src/linear.hpp"
 
 
 #define SUCCESS 0
@@ -40,4 +43,16 @@ int argumentTest () {
     }
 }
 */
+
+// Menu testing
+int menu () {
+   std::unique_ptr<Menu>testMenu(new Menu());
+
+   // Test menu object is created properly
+   if (testMenu == nullptr) {
+       return FAIL;
+   }
+
+   testMenu->choice();
+}
 

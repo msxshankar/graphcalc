@@ -60,13 +60,23 @@ int Graph::input() {
     }
 
     // Output inputted equation
-    auto iter = equationList.begin();
+    iter = equationList.begin();
     int count = 1;
 
     std::cout << "Inputted equation: ";
     while (iter != equationList.end()) {
         std::cout << iter->coefficient << "x^" << iter->power << ((count == equationList.size()) ? "\n" : " + ");
         iter++, count++;
+    }
+
+    // Allow user to try again
+    std::cout << FGBLUE("Proceed with equation? (y to input again, enter to proceed) > ");
+    attempt = std::cin.get();
+    if (attempt == "y") {
+       input();
+    }
+    else {
+        std::cin.ignore();
     }
 
     // Minimum and maximum range
@@ -76,10 +86,28 @@ int Graph::input() {
     return SUCCESS;
 }
 
+// Validates inputted equation
+int Graph::validate(int type) {
+
+    switch(type) {
+
+        // Linear equations
+        case 1: {
+            while (iter != equationList.end()) {
+                if (iter->coefficient != 0 || iter->coefficient != 1) {
+                    std::cout << FGRED("Equation is not linear") << std::endl;
+                    exit(FAILURE);
+                }
+            }
+        }
+    }
+}
+
+
 // Simplifies inputted equation
 int Graph::simplify() {
 
-    auto iter = equationList.begin();
+    //auto iter = equationList.begin();
 
     // Order list
     //Graph::quicksort();

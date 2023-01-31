@@ -42,12 +42,13 @@ int Menu::showGraph () {
         case 1: {
 
             // Calls Linear class methods
-            Linear lin1;
-            lin1.input();
-            lin1.intercepts();
-            lin1.perpendicular();
-            lin1.coorindates();
-            lin1.draw();
+            std::unique_ptr<Linear>linObject(new Linear());
+            linObject->input();
+            linObject->validate(choiceNumber);
+            linObject->intercepts();
+            linObject->perpendicular();
+            linObject->coorindates();
+            linObject->draw();
             break;
         }
 

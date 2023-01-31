@@ -3,10 +3,10 @@
 //
 #include <iostream>
 #include <vector>
-#include <cmath>
+#include <matplot/matplot.h>
+#include <random>
 
 #include "linear.hpp"
-#include "matplot/matplot.h"
 
 // Below methods assume inputted equation is in the form y = mx + c
 
@@ -59,13 +59,12 @@ double Linear::coorindates() {
 }
 
 int Linear::draw() {
-   //matplot::plot(coordinates, coordinates);
-   //matplot::show();
+    using namespace matplot;
 
     std::vector<double> Y = {16, 5, 9, 4};
+    std::vector<double> X = {4,2,4,9};
+    plot(Y,X);
 
-    matplot::plot(Y);
-
-    matplot::show();
+    show();
     return 0;
 }

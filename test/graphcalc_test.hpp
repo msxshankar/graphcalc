@@ -9,4 +9,6 @@
 #define FAIL 1
 #define UNDEFINED 2
 
+// Test functions
 int argumentTest();
+int menu();

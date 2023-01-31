@@ -24,6 +24,9 @@ protected:
     // Linked list to store equation
     std::list<struct equation> equationList;
 
+    // Iterator for equationList
+    std::_List_iterator<equation>iter;
+
     // Unique pointer to each node in linked list
     std::unique_ptr<struct equation> ptr;
 
@@ -32,11 +35,13 @@ protected:
 
     // Inputs
     std::string entry;
+    std::string attempt;
 
 public:
    Graph();
 
    int input();
+   int validate(int type);
    int simplify();
    std::list<struct equation> quicksort();
 };

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 
+#include "gtest/gtest.h"
 #include "graphcalc_test.hpp"
 #include "../src/main.hpp"
 #include "../src/menu.hpp"
@@ -13,11 +14,6 @@
 #define SUCCESS 0
 #define FAIL 1
 #define UNDEFINED 2
-
-int main () {
-
-    return SUCCESS;
-}
 
 /*
 int argumentTest () {
@@ -45,6 +41,7 @@ int argumentTest () {
 */
 
 // Menu testing
+/*
 int menu () {
    std::unique_ptr<Menu>testMenu(new Menu());
 
@@ -54,5 +51,14 @@ int menu () {
    }
 
    testMenu->choice();
+}
+*/
+TEST (MenuTest, InvalidInput) {
+    //std::unique_ptr<Menu>testMenu(new Menu());
+
+    //EXPECT_EQ(testMenu->choice(), 0);
+
+    Menu menu1;
+    EXPECT_EQ(menu1.choice(), 0);
 }
 

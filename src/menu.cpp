@@ -48,7 +48,7 @@ int Menu::showGraph () {
             linObject->intercepts();
             linObject->perpendicular();
             linObject->coorindates();
-            linObject->draw();
+            //linObject->draw();
             break;
         }
 

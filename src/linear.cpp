@@ -3,7 +3,7 @@
 //
 #include <iostream>
 #include <vector>
-#include <matplot/matplot.h>
+//#include <matplot/matplot.h>
 #include <random>
 
 #include "linear.hpp"
@@ -58,6 +58,7 @@ double Linear::coorindates() {
     return 0;
 }
 
+/*
 int Linear::draw() {
     using namespace matplot;
 
@@ -68,3 +69,4 @@ int Linear::draw() {
     show();
     return 0;
 }
+*/

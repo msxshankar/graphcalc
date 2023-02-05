@@ -2,6 +2,7 @@
 
 // Include libraries and files
 #include <iostream>
+#include <memory>
 
 #include "main.hpp"
 #include "menu.hpp"
@@ -18,13 +19,12 @@ int main (int argc, char *argv[]) {
         argumentParser(argv);
     }
     // Input class initialisation
-    Menu menu;
+    std::unique_ptr<Menu>start(new Menu());
 
     // Call all methods
-    menu.welcome();
-    menu.choice();
-    menu.showGraph();
-    //init.validation();
+    start->welcome();
+    start->choice();
+    start->showGraph();
 
 	return 0;
 }

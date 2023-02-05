@@ -3,12 +3,11 @@
 
 #include <iostream>
 #include <memory>
+#include <gtest/gtest.h>
 
-#include "gtest/gtest.h"
 #include "graphcalc_test.hpp"
 #include "../src/main.hpp"
 #include "../src/menu.hpp"
-#include "../src/linear.hpp"
 
 
 #define SUCCESS 0
@@ -52,13 +51,12 @@ int menu () {
 
    testMenu->choice();
 }
+
 */
+
 TEST (MenuTest, InvalidInput) {
-    //std::unique_ptr<Menu>testMenu(new Menu());
+    std::unique_ptr<Menu>testMenu(new Menu());
+    EXPECT_EQ(testMenu->choice(), 0);
 
-    //EXPECT_EQ(testMenu->choice(), 0);
-
-    Menu menu1;
-    EXPECT_EQ(menu1.choice(), 0);
 }
 

@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.14.0)
+cmake_minimum_required(VERSION 3.14)
+set(CMAKE_CXX_STANDARD 14)
 
 # Name of project
 project(graphcalc)
@@ -39,8 +40,11 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Add graphcalc test
-add_executable(graphcalc_test test/graphcalc_test.cpp)
-target_link_libraries(graphcalc_test gtest_main)
+file(GLOB TEST "test/*.cpp")
+add_executable(graphcalc_test ${TEST} ${SOURCES})
+target_link_libraries(graphcalc_test GTest::gtest_main)
+include(GoogleTest)
+gtest_discover_tests(graphcalc_test)
 add_test(
         NAME graphcalc_test
         COMMAND $<TARGET_FILE:graphcalc_test>

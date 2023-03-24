@@ -5,17 +5,13 @@
 
 #endif //GRAPHCALC_LINEAR_HPP
 
-// Linked list used to store equation
-struct equation {
-    double coefficient;
-    double power;
-    equation *next;
-};
+#include <vector>
+
+#include "graph.hpp"
 
 // Inherits from graph class
-class Linear {
+class Linear : public Graph {
 private:
-    equation *head;
     double y;
     double x;
     double c;
@@ -26,11 +22,12 @@ private:
     std::vector<double> coordinates;
 
 public:
-    Linear();
+    //Linear();
 
     ~Linear() {};
 
-    double intercepts(double y, double m, double c);
-    double coorindates(double y, double m, double c);
-    double perpendicular(double y, double m, double c);
+    double intercepts();
+    double coorindates();
+    double perpendicular();
+    int draw();
 };

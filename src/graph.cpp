@@ -4,13 +4,125 @@
 #include <iostream>
 
 #include "graph.hpp"
+#include "colour.hpp"
 
-// Constructor to accept minimum x and y values
-//Graph::Graph(double xMin, double xMax, double increment) : xMin(xMin), xMax(xMax), increment(increment) {
-//}
+// Constructor
+Graph::Graph() : ptr(std::make_unique<struct equation>()) {}
 
-Graph::Graph(double xMinInp, double xMaxInp, double incrementInp) {
-    xMin = xMinInp;
-    xMax = xMaxInp;
-    increment = incrementInp;
+// Adding stdin values to linked list
+int Graph::input() {
+
+    std::cout << BOLD("Please enter coefficients and powers of equation. Start with largest powers of x") << std::endl;
+    std::cout << "For example: y = ax^2 + bx + c" << std::endl;
+    std::cout << "If you've finished inputting, type done" << std::endl;
+
+    while (true) {
+        std::cout << BOLD("Enter coefficient (or type done if finished): ");
+        std::cin >> entry;
+
+        if (entry == "done" || entry == "DONE") {
+           break;
+        }
+        else {
+           try {
+               ptr->coefficient = std::stod(entry);
+           }
+
+           // Invalid inputs
+           catch (std::invalid_argument&) {
+              std::cout << FGRED("Invalid input, please try again") << std::endl;
+              std::cin.clear();
+              continue;
+           }
+        }
+
+        std::cout << BOLD("Enter power of x: ");
+        std::cin >> entry;
+
+        if (entry == "done" || entry == "DONE") {
+           std::cout << "Power will be zero" << std::endl;
+           break;
+        }
+        else {
+            try {
+                ptr->power = std::stod(entry);
+            }
+
+            catch (std::invalid_argument&) {
+                std::cout << FGRED("Invalid input. Please try again") << std::endl;
+                std::cin.clear();
+                continue;
+            }
+        }
+        // Add to linked list
+        equationList.push_back(*ptr);
+
+    }
+
+    // Output inputted equation
+    iter = equationList.begin();
+    int count = 1;
+
+    std::cout << "Inputted equation: ";
+    while (iter != equationList.end()) {
+        std::cout << iter->coefficient << "x^" << iter->power << ((count == equationList.size()) ? "\n" : " + ");
+        iter++, count++;
+    }
+
+    // Allow user to try again
+    std::cout << FGBLUE("Proceed with equation? (y to input again, enter to proceed) > ");
+    attempt = std::cin.get();
+    if (attempt == "y") {
+       input();
+    }
+    else {
+        std::cin.ignore();
+    }
+
+    // Minimum and maximum range
+    std::cout << "Next, enter minimum and maximum values of x (min max): ";
+    std::cin >> min >> max;
+
+    return SUCCESS;
+}
+
+// Validates inputted equation
+int Graph::validate(int type) {
+
+    switch(type) {
+
+        // Linear equations
+        case 1: {
+            while (iter != equationList.end()) {
+                if (iter->coefficient != 0 || iter->coefficient != 1) {
+                    std::cout << FGRED("Equation is not linear") << std::endl;
+                    exit(FAILURE);
+                }
+            }
+        }
+    }
+}
+
+
+// Simplifies inputted equation
+int Graph::simplify() {
+
+    //auto iter = equationList.begin();
+
+    // Order list
+    //Graph::quicksort();
+
+    while (iter != equationList.end()) {
+        // Compare powers of adjacent terms
+        if (iter++->power == iter->power) {
+            // Add previous coefficient
+            iter-- ->coefficient += iter->coefficient;
+        }
+    }
+    return SUCCESS;
+}
+
+// Quick sort to sort list in ascending order
+std::list<struct equation> quicksort () {
+
 }

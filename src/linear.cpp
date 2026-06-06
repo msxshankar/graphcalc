@@ -7,7 +7,7 @@
 #include "linear.hpp"
 
 Linear::Linear() {
-    head->coefficient = 0;
+    // head is now initialized to nullptr in header
 }
 
 
@@ -15,48 +15,40 @@ Linear::Linear() {
 
 // Calculates intercepts
 double Linear::intercepts(double y, double m, double c) {
-    yIntercept = ((m*0) + c) / y;
-    xIntercept = ((y*0) - c) / m;
-    std::cout << "STATISTICS:" << std::endl;
+    // Equation: y_in * Y = m * X + c
+    // If y_in = 1, then Y = m * X + c
+    
+    yIntercept = c / y;
+    if (m != 0) {
+        xIntercept = -c / m;
+    } else {
+        xIntercept = 0; // Or handle as undefined
+    }
+
+    std::cout << "\nSTATISTICS:" << std::endl;
     std::cout << "Vertical (y) intercept: " << yIntercept << std::endl;
-    std::cout << "Horizontal (x) intercept: " << xIntercept << std::endl;
+    std::cout << "Horizontal (x) intercept: " << (m != 0 ? std::to_string(xIntercept) : "None") << std::endl;
 
     return 0;
 }
 
 // Finds perpendicular line to inputted equation
 double Linear::perpendicular(double y, double m, double c) {
-    gradient = m;
-    perpengradient = (1 / gradient) * -1;
-    std::cout << "Perpendicular equation: y = " << perpengradient << "x +" << c << std::endl;
+    if (m != 0) {
+        perpengradient = -1.0 / (m / y);
+        std::cout << "Perpendicular equation: y = " << perpengradient << "x + " << (c / y) << " (through y-intercept)" << std::endl;
+    } else {
+        std::cout << "Perpendicular equation: x = 0 (vertical line)" << std::endl;
+    }
 
     return 0;
 }
 
-// Vector of coorindates
-double Linear::coorindates(double y, double m, double c) {
-
-    int minX = 0;
-    int maxX = 10;
-
-    // Add points to vector
-    for (int i = minX ; i < maxX ; i++ ) {
-       if (i % 2 == 1) {
-           coordinates.push_back((m*i)+c);
-       }
-       else {
-           coordinates.push_back(i);
-       }
+// Generate coordinates for plotting
+void Linear::generateCoordinates(double m, double c, double xMin, double xMax, double step) {
+    coordinates.clear();
+    for (double xVal = xMin; xVal <= xMax; xVal += step) {
+        double yVal = m * xVal + c;
+        coordinates.push_back({xVal, yVal});
     }
-
-    std::cout << "COORDINATES:" << std::endl;
-    for (int j: coordinates) {
-        if (j % 2 == 0) {
-            std::cout << j << ',';
-        }
-        else {
-            std::cout << j << ' ';
-        }
-    }
-    return 0;
 }

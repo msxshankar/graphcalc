@@ -4,6 +4,15 @@ class Menu {
 
 private:
     int choiceNumber;
+    double m = 0;
+    double c = 0;
+    double y_in = 1;
+
+    void interactiveLinear();
+    void interactive3D();
+
+    template<typename T>
+    T getInput(const std::string& prompt, T defaultValue);
 
 public:
 
@@ -12,9 +21,7 @@ public:
         choiceNumber = 0;
     }
 
-    // Method stubs - to be implemented at a later date
     void welcome();
     int choice();
-    //int validation();
     int showGraph();
 };

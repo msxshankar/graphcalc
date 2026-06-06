@@ -41,3 +41,7 @@ cmake-build-release/
 # Debian packaging
 usr/bin/
 *.deb
+
+# Executable binary
+graphcalc
+

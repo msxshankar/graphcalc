@@ -2,32 +2,29 @@
 
 // Include libraries and files
 #include <iostream>
+#include <clocale>
 
 #include "main.hpp"
-#include "menu.hpp"
+#include "tui.hpp"
 
 // namespace for global variables
 namespace global {
-    const std::string version = "0.9 beta";
+    const std::string version = "1.0 TUI Edition";
 }
 
 int main (int argc, char *argv[]) {
+    std::setlocale(LC_ALL, "");
 
     // Parse arguments
     if (argc > 1) {
         argumentParser(argv);
     }
-    // Input class initialisation
-    Menu menu;
-
-    // Call all methods
-    menu.welcome();
-    menu.choice();
-    menu.showGraph();
-    //init.validation();
-
-	return 0;
+    
+    // TUI initialization and run
+    TUI tui;
+    return tui.run();
 }
+
 
 // Accepts command line arguments
 void argumentParser (char *argv[]) {

@@ -9,4 +9,5 @@ file(GLOB SOURCES "src/*.cpp")
 
 # Executable and dependencies
 add_executable(graphcalc ${SOURCES})
+target_link_libraries(graphcalc X11 GL)
 

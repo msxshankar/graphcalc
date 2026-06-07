@@ -1029,54 +1029,179 @@ std::string TUI::handleCustomInput(bool is3D) {
 
 void TUI::showSimulationMenu(const std::string& equation, bool is3D) {
     int simChoice = 0;
-    while (true) {
-        clearScreen();
-        drawHeader();
-        std::cout << "Equation: \033[1;38;5;51m" << (is3D ? "z = " : "y = ") << equation << "\033[0m\n\n";
-        std::cout << "Choose Visualization Mode:\n\n";
+    bool inMenu = true;
+    while (inMenu) {
+        clearGrid();
 
-        if (simChoice == 0) {
-            std::cout << "  \033[1;38;5;51m▶ [1] Simplified Terminal View (Braille Plotter)\033[0m\n";
-            std::cout << "    [2] High-Res OpenGL Window View (60 FPS)\n";
-            std::cout << "    [3] Go Back\n";
-        } else if (simChoice == 1) {
-            std::cout << "    [1] Simplified Terminal View (Braille Plotter)\n";
-            std::cout << "  \033[1;38;5;51m▶ [2] High-Res OpenGL Window View (60 FPS)\033[0m\n";
-            std::cout << "    [3] Go Back\n";
-        } else {
-            std::cout << "    [1] Simplified Terminal View (Braille Plotter)\n";
-            std::cout << "    [2] High-Res OpenGL Window View (60 FPS)\n";
-            std::cout << "  \033[1;38;5;51m▶ [3] Go Back\033[0m\n";
+        // 1. Draw outer border box
+        drawBox(0, 0, screenWidth, screenHeight, "\033[1;38;5;99m");
+
+        // 2. Draw Header
+        std::string headerStr = "Choose Visualization Mode";
+        int headerX = (screenWidth - headerStr.length()) / 2;
+        if (headerX < 2) headerX = 2;
+        drawText(headerX, 1, headerStr, "\033[1;38;5;51m");
+
+        // 3. Draw Equation Details
+        std::string eqDisplay = std::string("Equation: ") + (is3D ? "z = " : "y = ") + equation;
+        int eqX = (screenWidth - eqDisplay.length()) / 2;
+        if (eqX < 2) eqX = 2;
+        drawText(eqX, 3, eqDisplay, "\033[1;38;5;177m");
+
+        // 4. Calculate layout for the windows
+        int footerY = screenHeight - 1;
+        int goBackH = 3;
+        int goBackY = footerY - goBackH - 1;
+        int winY = 5;
+        int winH = goBackY - winY - 1;
+        if (winH < 4) winH = 4; // safety minimum
+        int winW = (screenWidth - 6) / 2;
+        if (winW < 20) winW = 20;
+
+        int win1X = 2;
+        int win2X = win1X + winW + 2;
+
+        // Border colors based on selection
+        std::string col1 = (simChoice == 0) ? "\033[1;38;5;51m" : "\033[38;5;244m";
+        std::string col2 = (simChoice == 1) ? "\033[1;38;5;51m" : "\033[38;5;244m";
+        std::string col3 = (simChoice == 2) ? "\033[1;38;5;51m" : "\033[38;5;244m";
+
+        // Draw Left Window (Terminal View)
+        drawBox(win1X, winY, winW, winH, col1);
+        std::string title1 = "[ 1 ] TERMINAL PLOTTER";
+        int title1X = win1X + (winW - title1.length()) / 2;
+        drawText(title1X, winY + 1, title1, (simChoice == 0) ? "\033[1;38;5;220m" : "\033[38;5;250m");
+
+        // Info inside Left Window
+        std::vector<std::string> lines1 = {
+            "Renders the graph inside your",
+            "terminal window using high-res",
+            "Unicode Braille characters.",
+            "",
+            "• Responsive to window resizing",
+            "• Interactive parameter tuning",
+            "• Mouse drag support in TUI",
+            "",
+            "Press [1] or Enter to Select"
+        };
+        for (size_t i = 0; i < lines1.size(); ++i) {
+            int lineY = winY + 3 + i;
+            if (lineY >= winY + winH - 1) break;
+            std::string text = lines1[i];
+            if (static_cast<int>(text.length()) > winW - 4) {
+                text = text.substr(0, winW - 7) + "...";
+            }
+            int textX = win1X + (winW - text.length()) / 2;
+            drawText(textX, lineY, text, "\033[38;5;250m");
         }
 
-        drawFooter("[Up/Down] Navigate | [Enter] Select");
-        
-        int key = readKey();
-        if (key == 1001) { // Up
-            simChoice = std::max(0, simChoice - 1);
-        } 
-        else if (key == 1002) { // Down
-            simChoice = std::min(2, simChoice + 1);
-        } 
-        else if (key == 10 || key == 13) { // Enter
-            if (simChoice == 0) {
-                runTerminalSimulation(equation, is3D);
-            } else if (simChoice == 1) {
-                // Restore terminal configuration momentarily for OpenGL window
-                restoreTerminal();
-                std::cout << "\033[?25h" << std::flush; // show cursor for X11
+        // Draw Right Window (OpenGL View)
+        drawBox(win2X, winY, winW, winH, col2);
+        std::string title2 = "[ 2 ] HIGH-RES OPENGL";
+        int title2X = win2X + (winW - title2.length()) / 2;
+        drawText(title2X, winY + 1, title2, (simChoice == 1) ? "\033[1;38;5;220m" : "\033[38;5;250m");
 
+        // Info inside Right Window
+        std::vector<std::string> lines2 = {
+            "Opens a dedicated X11 OpenGL",
+            "window for ultra-smooth 60 FPS",
+            "hardware-accelerated rendering.",
+            "",
+            "• Detailed 3D mesh projection",
+            "• Dynamic color gradients",
+            "• Mouse rotation and zooming",
+            "",
+            "Press [2] or Enter to Select"
+        };
+        for (size_t i = 0; i < lines2.size(); ++i) {
+            int lineY = winY + 3 + i;
+            if (lineY >= winY + winH - 1) break;
+            std::string text = lines2[i];
+            if (static_cast<int>(text.length()) > winW - 4) {
+                text = text.substr(0, winW - 7) + "...";
+            }
+            int textX = win2X + (winW - text.length()) / 2;
+            drawText(textX, lineY, text, "\033[38;5;250m");
+        }
+
+        // Draw Go Back Button
+        std::string title3 = "[ 3 ] GO BACK";
+        int win3W = 20;
+        int win3X = (screenWidth - win3W) / 2;
+        drawBox(win3X, goBackY, win3W, goBackH, col3);
+        int title3X = win3X + (win3W - title3.length()) / 2;
+        drawText(title3X, goBackY + 1, title3, (simChoice == 2) ? "\033[1;38;5;220m" : "\033[38;5;250m");
+
+        // 5. Draw Footer
+        std::string footerStr = " [Left/Right/Up/Down] Navigate | [1/2/3] Select | [Enter] Launch | [Q/Esc] Go Back ";
+        int footerX = (screenWidth - footerStr.length()) / 2;
+        if (footerX < 2) footerX = 2;
+        drawText(footerX, screenHeight - 1, footerStr, "\033[38;5;244m");
+
+        // Flush
+        flushScreen();
+
+        // Key reading
+        int key = readKey();
+        if (key > 0) {
+            if (key == 'q' || key == 'Q' || key == 27) {
+                inMenu = false;
+            }
+            else if (key == 1004) { // Left
+                if (simChoice == 1) {
+                    simChoice = 0;
+                } else if (simChoice == 2) {
+                    simChoice = 0;
+                }
+            }
+            else if (key == 1003) { // Right
+                if (simChoice == 0) {
+                    simChoice = 1;
+                } else if (simChoice == 2) {
+                    simChoice = 1;
+                }
+            }
+            else if (key == 1002) { // Down
+                if (simChoice == 0 || simChoice == 1) {
+                    simChoice = 2;
+                }
+            }
+            else if (key == 1001) { // Up
+                if (simChoice == 2) {
+                    simChoice = 0;
+                }
+            }
+            else if (key == '1') {
+                simChoice = 0;
+                runTerminalSimulation(equation, is3D);
+            }
+            else if (key == '2') {
+                simChoice = 1;
+                restoreTerminal();
+                std::cout << "\033[?25h" << std::flush;
                 OpenGLWindow glWin;
                 glWin.openWindow(equation, is3D);
-
-                std::cout << "\033[?25l" << std::flush; // hide cursor
-                setupTerminal(); // Re-establish TUI raw mode
-            } else {
-                break; // Go Back
+                std::cout << "\033[?25l" << std::flush;
+                setupTerminal();
             }
-        } 
-        else if (key == 27 || key == 'q' || key == 'Q') {
-            break;
+            else if (key == '3') {
+                simChoice = 2;
+                inMenu = false;
+            }
+            else if (key == 10 || key == 13) { // Enter
+                if (simChoice == 0) {
+                    runTerminalSimulation(equation, is3D);
+                } else if (simChoice == 1) {
+                    restoreTerminal();
+                    std::cout << "\033[?25h" << std::flush;
+                    OpenGLWindow glWin;
+                    glWin.openWindow(equation, is3D);
+                    std::cout << "\033[?25l" << std::flush;
+                    setupTerminal();
+                } else if (simChoice == 2) {
+                    inMenu = false;
+                }
+            }
         }
     }
 }
@@ -1130,6 +1255,11 @@ void TUI::runTerminalSimulation(const std::string& equation, bool is3D) {
         int height = screenHeight - 5;
         if (width < 20) width = 20;
         if (height < 5) height = 5;
+
+        double cosY = std::cos(angleY);
+        double sinY = std::sin(angleY);
+        double cosX = std::cos(angleX);
+        double sinX = std::sin(angleX);
 
         Plotter plotter(width, height);
 
@@ -1337,15 +1467,15 @@ void TUI::runTerminalSimulation(const std::string& equation, bool is3D) {
                     points.push_back({lx, ly, lz - rho});
                 }
 
-                auto projectPt = [angleX, angleY](const Point3D& p, int gw, int gh) -> Point2D {
+                auto projectPt = [cosX, sinX, cosY, sinY](const Point3D& p, int gw, int gh) -> Point2D {
                     double x = p.x;
                     double y = p.y;
                     double z = p.z;
-                    double tx = x * std::cos(angleY) + z * std::sin(angleY);
-                    double tz = -x * std::sin(angleY) + z * std::cos(angleY);
+                    double tx = x * cosY + z * sinY;
+                    double tz = -x * sinY + z * cosY;
                     x = tx; z = tz;
-                    double ty = y * std::cos(angleX) - z * std::sin(angleX);
-                    tz = y * std::sin(angleX) + z * std::cos(angleX);
+                    double ty = y * cosX - z * sinX;
+                    tz = y * sinX + z * cosX;
                     y = ty; z = tz;
                     
                     double fov = 100.0;
@@ -1400,15 +1530,15 @@ void TUI::runTerminalSimulation(const std::string& equation, bool is3D) {
                     points.push_back({ax * 1.5, ay * 1.5, (az - 1.2) * 1.5});
                 }
 
-                auto projectPt = [angleX, angleY](const Point3D& p, int gw, int gh) -> Point2D {
+                auto projectPt = [cosX, sinX, cosY, sinY](const Point3D& p, int gw, int gh) -> Point2D {
                     double x = p.x;
                     double y = p.y;
                     double z = p.z;
-                    double tx = x * std::cos(angleY) + z * std::sin(angleY);
-                    double tz = -x * std::sin(angleY) + z * std::cos(angleY);
+                    double tx = x * cosY + z * sinY;
+                    double tz = -x * sinY + z * cosY;
                     x = tx; z = tz;
-                    double ty = y * std::cos(angleX) - z * std::sin(angleX);
-                    tz = y * std::sin(angleX) + z * std::cos(angleX);
+                    double ty = y * cosX - z * sinX;
+                    tz = y * sinX + z * cosX;
                     y = ty; z = tz;
                     
                     double fov = 100.0;
@@ -1433,7 +1563,7 @@ void TUI::runTerminalSimulation(const std::string& equation, bool is3D) {
             }
             else {
                 // Plot 3D surface projected onto 2D terminal canvas
-                int res = 24; // smaller grid for terminal resolution
+                int res = 20; // smaller grid for terminal resolution (optimized from 24)
                 double px_range = xMax - xMin;
                 double py_range = yMax - yMin;
 
@@ -1451,17 +1581,17 @@ void TUI::runTerminalSimulation(const std::string& equation, bool is3D) {
                 }
 
                 // Projection math
-                auto projectPt = [angleX, angleY](const Point3D& p, int gw, int gh) -> Point2D {
+                auto projectPt = [cosX, sinX, cosY, sinY](const Point3D& p, int gw, int gh) -> Point2D {
                     double x = p.x;
                     double y = p.y;
                     double z = p.z;
                     // Rotate Y
-                    double tx = x * std::cos(angleY) + z * std::sin(angleY);
-                    double tz = -x * std::sin(angleY) + z * std::cos(angleY);
+                    double tx = x * cosY + z * sinY;
+                    double tz = -x * sinY + z * cosY;
                     x = tx; z = tz;
                     // Rotate X
-                    double ty = y * std::cos(angleX) - z * std::sin(angleX);
-                    tz = y * std::sin(angleX) + z * std::cos(angleX);
+                    double ty = y * cosX - z * sinX;
+                    tz = y * sinX + z * cosX;
                     y = ty; z = tz;
                     // Perspective projection
                     double fov = 100.0;

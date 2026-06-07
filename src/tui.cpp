@@ -1125,8 +1125,12 @@ void TUI::runTerminalSimulation(const std::string& equation, bool is3D) {
         // Clear terminal display and draw plot
         std::cout << "\033[2J\033[H";
 
-        int width = 74;
-        int height = 24;
+        updateTerminalSize();
+        int width = screenWidth - 2;
+        int height = screenHeight - 5;
+        if (width < 20) width = 20;
+        if (height < 5) height = 5;
+
         Plotter plotter(width, height);
 
         if (equation == "mandelbrot" || equation == "julia" || equation == "plasma" || equation == "sierpinski") {

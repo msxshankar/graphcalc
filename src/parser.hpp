@@ -17,6 +17,7 @@ enum class TokenType {
 struct Token {
     TokenType type;
     std::string value;
+    double numVal = 0.0;
 };
 
 class MathParser {

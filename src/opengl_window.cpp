@@ -394,10 +394,13 @@ void OpenGLWindow::render2D() {
                     double zi = 0.0;
                     int iter = 0;
                     int maxIter = 80;
-                    while (zr*zr + zi*zi <= 4.0 && iter < maxIter) {
-                        double temp = zr*zr - zi*zi + cr;
+                    double zr2 = 0.0;
+                    double zi2 = 0.0;
+                    while (zr2 + zi2 <= 4.0 && iter < maxIter) {
                         zi = 2.0*zr*zi + ci;
-                        zr = temp;
+                        zr = zr2 - zi2 + cr;
+                        zr2 = zr*zr;
+                        zi2 = zi*zi;
                         iter++;
                     }
                     if (iter < maxIter) {
@@ -416,10 +419,13 @@ void OpenGLWindow::render2D() {
                     double zi = pyVal;
                     int iter = 0;
                     int maxIter = 80;
-                    while (zr*zr + zi*zi <= 4.0 && iter < maxIter) {
-                        double temp = zr*zr - zi*zi + cr;
+                    double zr2 = zr*zr;
+                    double zi2 = zi*zi;
+                    while (zr2 + zi2 <= 4.0 && iter < maxIter) {
                         zi = 2.0*zr*zi + ci;
-                        zr = temp;
+                        zr = zr2 - zi2 + cr;
+                        zr2 = zr*zr;
+                        zi2 = zi*zi;
                         iter++;
                     }
                     if (iter < maxIter) {
@@ -801,6 +807,7 @@ void OpenGLWindow::render3D() {
     };
 
     // Draw line loops for surface mesh
+    glBegin(GL_LINES);
     for (int i = 0; i < res; ++i) {
         double px1 = xMin + (i * rangeX / (res - 1));
         double px2 = (i + 1 < res) ? xMin + ((i + 1) * rangeX / (res - 1)) : px1;
@@ -809,7 +816,6 @@ void OpenGLWindow::render3D() {
             double py1 = yMin + (j * rangeY / (res - 1));
             double py2 = (j + 1 < res) ? yMin + ((j + 1) * rangeY / (res - 1)) : py1;
 
-            glBegin(GL_LINE_STRIP);
             // Connect to i+1
             if (i + 1 < res) {
                 setVertexColor(zValues[i][j]);
@@ -817,9 +823,7 @@ void OpenGLWindow::render3D() {
                 setVertexColor(zValues[i+1][j]);
                 glVertex3f(px2, zValues[i+1][j], py1);
             }
-            glEnd();
 
-            glBegin(GL_LINE_STRIP);
             // Connect to j+1
             if (j + 1 < res) {
                 setVertexColor(zValues[i][j]);
@@ -827,9 +831,9 @@ void OpenGLWindow::render3D() {
                 setVertexColor(zValues[i][j+1]);
                 glVertex3f(px1, zValues[i][j+1], py2);
             }
-            glEnd();
         }
     }
+    glEnd();
 
     // Draw coordinate base grid in subtle gray
     glColor3f(0.2f, 0.23f, 0.3f);

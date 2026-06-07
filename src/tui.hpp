@@ -67,6 +67,8 @@ private:
     double menuTimeVal;
     int scrollOffset;
     int maxScrollOffset;
+    MathParser currentMenuParser;
+    std::string currentMenuEquation;
 
     void updateTerminalSize();
 

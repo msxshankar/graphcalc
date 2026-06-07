@@ -54,7 +54,13 @@ std::vector<Token> MathParser::tokenize(const std::string& expr) {
                 numStr += expr[i];
                 i++;
             }
-            tokens.push_back({TokenType::Number, numStr});
+            double val = 0.0;
+            try {
+                val = std::stod(numStr);
+            } catch (...) {
+                val = 0.0;
+            }
+            tokens.push_back({TokenType::Number, numStr, val});
             continue;
         }
 
@@ -146,13 +152,13 @@ bool MathParser::shuntingYard() {
     auto getPrecedence = [](const std::string& op) {
         if (op == "+" || op == "-") return 1;
         if (op == "*" || op == "/") return 2;
-        if (op == "u-") return 3; // Unary minus
+        if (op == "u-" || op == "u+") return 3; // Unary operators
         if (op == "^") return 4;
         return 0;
     };
 
     auto isRightAssociative = [](const std::string& op) {
-        return op == "^" || op == "u-";
+        return op == "^" || op == "u-" || op == "u+";
     };
 
     bool nextCanBeUnary = true;
@@ -193,8 +199,12 @@ bool MathParser::shuntingYard() {
         } 
         else if (token.type == TokenType::Operator) {
             std::string opVal = token.value;
-            if (nextCanBeUnary && opVal == "-") {
-                opVal = "u-";
+            if (nextCanBeUnary) {
+                if (opVal == "-") {
+                    opVal = "u-";
+                } else if (opVal == "+") {
+                    opVal = "u+";
+                }
             }
 
             while (!opStack.empty() && (opStack.top().type == TokenType::Operator || opStack.top().type == TokenType::Function)) {
@@ -239,11 +249,7 @@ double MathParser::evaluate(double x, double y, double t, double a, double b, do
 
     for (const auto& token : postfixTokens) {
         if (token.type == TokenType::Number) {
-            try {
-                evalStack.push(std::stod(token.value));
-            } catch (...) {
-                evalStack.push(0.0);
-            }
+            evalStack.push(token.numVal);
         } 
         else if (token.type == TokenType::Variable) {
             char var = token.value[0];
@@ -260,6 +266,9 @@ double MathParser::evaluate(double x, double y, double t, double a, double b, do
                 if (evalStack.empty()) return 0.0;
                 double val = evalStack.top(); evalStack.pop();
                 evalStack.push(-val);
+            } else if (token.value == "u+") {
+                if (evalStack.empty()) return 0.0;
+                // Unary plus is a no-op
             } else {
                 if (evalStack.size() < 2) return 0.0;
                 double rVal = evalStack.top(); evalStack.pop();

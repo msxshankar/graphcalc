@@ -239,9 +239,12 @@ void TUI::flushScreen() {
 
 
 void TUI::renderMiniPreview(int startX, int startY, int w, int h, const std::string& eq, bool is3D, double time) {
-    MathParser previewParser;
-    if (!previewParser.parse(eq)) {
-        return;
+    if (eq != currentMenuEquation || !currentMenuParser.isValid()) {
+        currentMenuEquation = eq;
+        if (!currentMenuParser.parse(eq)) {
+            currentMenuEquation = "";
+            return;
+        }
     }
 
     Plotter plotter(w, h);
@@ -261,10 +264,13 @@ void TUI::renderMiniPreview(int startX, int startY, int w, int h, const std::str
                     double zi = 0.0;
                     int iter = 0;
                     int maxIter = 24;
-                    while (zr*zr + zi*zi <= 4.0 && iter < maxIter) {
-                        double temp = zr*zr - zi*zi + cr;
+                    double zr2 = 0.0;
+                    double zi2 = 0.0;
+                    while (zr2 + zi2 <= 4.0 && iter < maxIter) {
                         zi = 2.0*zr*zi + ci;
-                        zr = temp;
+                        zr = zr2 - zi2 + cr;
+                        zr2 = zr*zr;
+                        zi2 = zi*zi;
                         iter++;
                     }
                     if (iter < maxIter) {
@@ -282,10 +288,13 @@ void TUI::renderMiniPreview(int startX, int startY, int w, int h, const std::str
                     double zi = jy;
                     int iter = 0;
                     int maxIter = 24;
-                    while (zr*zr + zi*zi <= 4.0 && iter < maxIter) {
-                        double temp = zr*zr - zi*zi + cr;
+                    double zr2 = zr*zr;
+                    double zi2 = zi*zi;
+                    while (zr2 + zi2 <= 4.0 && iter < maxIter) {
                         zi = 2.0*zr*zi + ci;
-                        zr = temp;
+                        zr = zr2 - zi2 + cr;
+                        zr2 = zr*zr;
+                        zi2 = zi*zi;
                         iter++;
                     }
                     if (iter < maxIter) {
@@ -528,7 +537,7 @@ void TUI::renderMiniPreview(int startX, int startY, int w, int h, const std::str
         int gridW = w * 2;
         for (int i = 0; i < gridW; ++i) {
             double xVal = xMin + (static_cast<double>(i) / (gridW - 1)) * (xMax - xMin);
-            double yVal = previewParser.evaluate(xVal, 0.0, time, 1.0, 1.0, 0.0);
+            double yVal = currentMenuParser.evaluate(xVal, 0.0, time, 1.0, 1.0, 0.0);
             if (yVal >= yMin && yVal <= yMax) {
                 int py = static_cast<int>((yVal - yMin) / (yMax - yMin) * (h * 4 - 1));
                 plotter.setDot(i, py, 0); // Cyan
@@ -550,7 +559,7 @@ void TUI::renderMiniPreview(int startX, int startY, int w, int h, const std::str
             double px = xMin + (i * rangeX / (res - 1));
             for (int j = 0; j < res; ++j) {
                 double py = yMin + (j * rangeY / (res - 1));
-                double pz = previewParser.evaluate(px, py, time, 1.0, 1.0, 0.0);
+                double pz = currentMenuParser.evaluate(px, py, time, 1.0, 1.0, 0.0);
                 row.push_back({px, py, pz});
             }
             mesh.push_back(row);
@@ -1135,10 +1144,13 @@ void TUI::runTerminalSimulation(const std::string& equation, bool is3D) {
                         double zi = 0.0;
                         int iter = 0;
                         int maxIter = 30;
-                        while (zr*zr + zi*zi <= 4.0 && iter < maxIter) {
-                            double temp = zr*zr - zi*zi + cr;
+                        double zr2 = 0.0;
+                        double zi2 = 0.0;
+                        while (zr2 + zi2 <= 4.0 && iter < maxIter) {
                             zi = 2.0*zr*zi + ci;
-                            zr = temp;
+                            zr = zr2 - zi2 + cr;
+                            zr2 = zr*zr;
+                            zi2 = zi*zi;
                             iter++;
                         }
                         if (iter < maxIter) {
@@ -1154,10 +1166,13 @@ void TUI::runTerminalSimulation(const std::string& equation, bool is3D) {
                         double zi = pyVal;
                         int iter = 0;
                         int maxIter = 30;
-                        while (zr*zr + zi*zi <= 4.0 && iter < maxIter) {
-                            double temp = zr*zr - zi*zi + cr;
+                        double zr2 = zr*zr;
+                        double zi2 = zi*zi;
+                        while (zr2 + zi2 <= 4.0 && iter < maxIter) {
                             zi = 2.0*zr*zi + ci;
-                            zr = temp;
+                            zr = zr2 - zi2 + cr;
+                            zr2 = zr*zr;
+                            zi2 = zi*zi;
                             iter++;
                         }
                         if (iter < maxIter) {

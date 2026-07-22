@@ -41,6 +41,7 @@ OpenGLWindow::OpenGLWindow() :
     windowId(0),
     glContextPtr(nullptr),
     deleteMessageAtom(0),
+    fontId(0),
     windowWidth(800),
     windowHeight(600) {}
 
@@ -184,6 +185,7 @@ bool OpenGLWindow::initX11GLX() {
     // Load X11 font for HUD display
     Font font = XLoadFont(dpy, "9x15");
     if (font) {
+        fontId = font;
         glXUseXFont(font, 32, 96, 1000);
     }
 
@@ -195,6 +197,10 @@ void OpenGLWindow::cleanup() {
     GLXContext ctx = CTX(glContextPtr);
     Window win = WIN(windowId);
 
+    if (dpy && fontId) {
+        XUnloadFont(dpy, fontId);
+        fontId = 0;
+    }
     if (ctx) {
         glXMakeCurrent(dpy, None, NULL);
         glXDestroyContext(dpy, ctx);

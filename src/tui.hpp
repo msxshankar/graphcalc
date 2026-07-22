@@ -17,6 +17,13 @@ struct TUICell {
     std::string color = "";
 };
 
+struct MouseClickEvent {
+    int button = 0; // 0 = left click, 1 = middle, 2 = right, 64 = scroll up, 65 = scroll down
+    int x = 0;      // 0-indexed column
+    int y = 0;      // 0-indexed row
+    bool isRelease = false;
+};
+
 class TUI {
 public:
     TUI();
@@ -24,6 +31,8 @@ public:
 
     // Runs the main TUI loop. Returns 0 on clean exit.
     int run();
+
+    const MouseClickEvent& getLastMouseEvent() const { return lastMouseEvent; }
 
 private:
     // Grid rendering helpers
@@ -69,6 +78,7 @@ private:
     int maxScrollOffset;
     MathParser currentMenuParser;
     std::string currentMenuEquation;
+    MouseClickEvent lastMouseEvent;
 
     void updateTerminalSize();
 

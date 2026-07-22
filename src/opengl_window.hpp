@@ -55,6 +55,7 @@ private:
     unsigned long windowId; // Window
     void* glContextPtr; // GLXContext
     unsigned long deleteMessageAtom; // Atom for window close button
+    unsigned long fontId; // Font X11 handle
     int windowWidth;
     int windowHeight;
 };

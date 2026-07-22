@@ -2,6 +2,7 @@
 #include "plotter.hpp"
 #include "opengl_window.hpp"
 #include "graph3d.hpp"
+#include "fractal_engine.hpp"
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -11,6 +12,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
+#include <csignal>
 #include <unistd.h>
 #include <termios.h>
 #include <fcntl.h>
@@ -630,17 +632,37 @@ void TUI::renderMiniPreview(int startX, int startY, int w, int h, const std::str
 }
 
 void TUI::enterAltBuffer() {
-    std::cout << "\033[?1049h\033[H\033[?25l" << std::flush;
+    std::cout << "\033[?1049h\033[H\033[?25l\033[?1000h\033[?1002h\033[?1003h\033[?1006h" << std::flush;
 }
 
 void TUI::exitAltBuffer() {
-    std::cout << "\033[?1049l\033[?25h" << std::flush;
+    std::cout << "\033[?1000l\033[?1002l\033[?1003l\033[?1006l\033[?1049l\033[?25h" << std::flush;
+}
+
+static struct termios g_origTermios;
+static bool g_hasOrigTermios = false;
+
+static void handleTerminalSignal(int sig) {
+    if (g_hasOrigTermios) {
+        tcsetattr(STDIN_FILENO, TCSAFLUSH, &g_origTermios);
+    }
+    std::cout << "\033[?1049l\033[?25h\033[?1000l\033[?1002l\033[?1003l\033[?1006l" << std::flush;
+    if (sig == SIGSEGV || sig == SIGABRT) {
+        _exit(128 + sig);
+    }
+    _exit(0);
 }
 
 void TUI::setupTerminal() {
     struct termios* raw = new struct termios;
     tcgetattr(STDIN_FILENO, raw);
     origTermiosPtr = raw;
+    g_origTermios = *raw;
+    g_hasOrigTermios = true;
+
+    std::signal(SIGINT, handleTerminalSignal);
+    std::signal(SIGTERM, handleTerminalSignal);
+    std::signal(SIGSEGV, handleTerminalSignal);
 
     struct termios t = *raw;
     t.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN);
@@ -649,6 +671,9 @@ void TUI::setupTerminal() {
     t.c_cc[VMIN] = 0;
     t.c_cc[VTIME] = 0;
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &t);
+
+    // Re-enable mouse tracking for TUI
+    std::cout << "\033[?1000h\033[?1002h\033[?1003h\033[?1006h" << std::flush;
 }
 
 void TUI::restoreTerminal() {
@@ -657,13 +682,23 @@ void TUI::restoreTerminal() {
         tcsetattr(STDIN_FILENO, TCSAFLUSH, raw);
         delete raw;
         origTermiosPtr = nullptr;
+        g_hasOrigTermios = false;
     }
+    std::signal(SIGINT, SIG_DFL);
+    std::signal(SIGTERM, SIG_DFL);
+    std::signal(SIGSEGV, SIG_DFL);
 }
+
+static std::string g_inputUngetBuf = "";
 
 int TUI::readKey(bool nonBlocking) {
     char c;
     int nread;
-    if (nonBlocking) {
+    if (!g_inputUngetBuf.empty()) {
+        c = g_inputUngetBuf.front();
+        g_inputUngetBuf.erase(0, 1);
+        nread = 1;
+    } else if (nonBlocking) {
         nread = read(STDIN_FILENO, &c, 1);
         if (nread <= 0) return 0; // No key pressed
     } else {
@@ -675,19 +710,102 @@ int TUI::readKey(bool nonBlocking) {
 
     if (c == 27) {
         char seq[3];
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        int n1 = read(STDIN_FILENO, &seq[0], 1);
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
+        int n1 = 0;
+        if (!g_inputUngetBuf.empty()) {
+            seq[0] = g_inputUngetBuf.front();
+            g_inputUngetBuf.erase(0, 1);
+            n1 = 1;
+        } else {
+            n1 = read(STDIN_FILENO, &seq[0], 1);
+        }
         if (n1 <= 0) return 27;
-        
-        int n2 = read(STDIN_FILENO, &seq[1], 1);
+
+        int n2 = 0;
+        if (!g_inputUngetBuf.empty()) {
+            seq[1] = g_inputUngetBuf.front();
+            g_inputUngetBuf.erase(0, 1);
+            n2 = 1;
+        } else {
+            n2 = read(STDIN_FILENO, &seq[1], 1);
+        }
         if (n2 <= 0) return 27;
 
         if (seq[0] == '[') {
-            switch (seq[1]) {
-                case 'A': return 1001; // Up Arrow
-                case 'B': return 1002; // Down Arrow
-                case 'C': return 1003; // Right Arrow
-                case 'D': return 1004; // Left Arrow
+            if (seq[1] == '<') {
+                // SGR mouse sequence: read until 'M' or 'm'
+                std::string mouseStr = "";
+                char mc;
+                auto startTime = std::chrono::high_resolution_clock::now();
+                while (true) {
+                    int n = 0;
+                    if (!g_inputUngetBuf.empty()) {
+                        mc = g_inputUngetBuf.front();
+                        g_inputUngetBuf.erase(0, 1);
+                        n = 1;
+                    } else {
+                        n = read(STDIN_FILENO, &mc, 1);
+                    }
+                    if (n > 0) {
+                        mouseStr += mc;
+                        if (mc == 'M' || mc == 'm') break;
+                    } else {
+                        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+                            std::chrono::high_resolution_clock::now() - startTime).count();
+                        if (elapsed > 20) break;
+                        std::this_thread::sleep_for(std::chrono::microseconds(500));
+                    }
+                }
+                if (!mouseStr.empty() && (mouseStr.back() == 'M' || mouseStr.back() == 'm')) {
+                    bool isRelease = (mouseStr.back() == 'm');
+                    int mbtn = 0, mx = 1, my = 1;
+                    std::stringstream mss(mouseStr.substr(0, mouseStr.length() - 1));
+                    char msep1 = 0, msep2 = 0;
+                    mss >> mbtn >> msep1 >> mx >> msep2 >> my;
+                    if (msep1 == ';' && msep2 == ';') {
+                        lastMouseEvent = {mbtn, mx - 1, my - 1, isRelease};
+
+                        // Drain stale queued mouse motion events to keep latency at 0ms
+                        int pending = 0;
+                        if (ioctl(STDIN_FILENO, FIONREAD, &pending) == 0 && pending >= 6) {
+                            MouseClickEvent prevEvent = lastMouseEvent;
+                            char peek[3] = {0, 0, 0};
+                            if (read(STDIN_FILENO, &peek[0], 1) == 1) {
+                                if (peek[0] == 27 && read(STDIN_FILENO, &peek[1], 1) == 1 && peek[1] == '[') {
+                                    if (read(STDIN_FILENO, &peek[2], 1) == 1 && peek[2] == '<') {
+                                        g_inputUngetBuf.push_back(27);
+                                        g_inputUngetBuf.push_back('[');
+                                        g_inputUngetBuf.push_back('<');
+                                        int nextKey = readKey(true);
+                                        if (nextKey == 2000) {
+                                            if ((prevEvent.button == 0 && !prevEvent.isRelease) ||
+                                                (lastMouseEvent.button == 0 && !lastMouseEvent.isRelease)) {
+                                                lastMouseEvent.button = 0;
+                                                lastMouseEvent.isRelease = false;
+                                            }
+                                        }
+                                    } else {
+                                        g_inputUngetBuf.push_back(peek[0]);
+                                        g_inputUngetBuf.push_back(peek[1]);
+                                        if (peek[2] != 0) g_inputUngetBuf.push_back(peek[2]);
+                                    }
+                                } else {
+                                    g_inputUngetBuf.push_back(peek[0]);
+                                    if (peek[1] != 0) g_inputUngetBuf.push_back(peek[1]);
+                                }
+                            }
+                        }
+
+                        return 2000; // Special key code for mouse event
+                    }
+                }
+            } else {
+                switch (seq[1]) {
+                    case 'A': return 1001; // Up Arrow
+                    case 'B': return 1002; // Down Arrow
+                    case 'C': return 1003; // Right Arrow
+                    case 'D': return 1004; // Left Arrow
+                }
             }
         }
         return 27;
@@ -756,6 +874,81 @@ int TUI::run() {
             else if (key == 10 || key == 13) { // Enter
                 const auto& list = (tabIndex == 0) ? templates2D : (tabIndex == 1) ? templates3D : templatesVis;
                 showSimulationMenu(list[selectedIndex].equation, (tabIndex == 1));
+            }
+            else if (key == 2000) { // Mouse event
+                const auto& m = lastMouseEvent;
+                const auto& currentList = (tabIndex == 0) ? templates2D : (tabIndex == 1) ? templates3D : templatesVis;
+                int dividerX = 42;
+                if (screenWidth < 90) dividerX = screenWidth / 2;
+
+                if (m.button == 64) { // Mouse Wheel Up
+                    scrollOffset = std::max(0, scrollOffset - 1);
+                } else if (m.button == 65) { // Mouse Wheel Down
+                    scrollOffset = std::min(maxScrollOffset, scrollOffset + 1);
+                } else {
+                    bool isClick = (m.button == 0 && !m.isRelease);
+
+                    // 1. Tabs at top (y == 2, 3, or 4) - CLICK switches tab
+                    if (m.y >= 2 && m.y <= 4 && isClick) {
+                        if (m.x >= 2 && m.x <= 14) {
+                            if (tabIndex != 0) { tabIndex = 0; selectedIndex = 0; scrollOffset = 0; }
+                        } else if (m.x >= 16 && m.x <= 27) {
+                            if (tabIndex != 1) { tabIndex = 1; selectedIndex = 0; scrollOffset = 0; }
+                        } else if (m.x >= 29 && m.x <= 41) {
+                            if (tabIndex != 2) { tabIndex = 2; selectedIndex = 0; scrollOffset = 0; }
+                        }
+                    }
+                    // 2. Left Column Template List - HOVER highlights, CLICK opens simulation menu!
+                    else if (m.x < dividerX && m.y >= 4 && m.y < screenHeight - 2) {
+                        for (size_t i = 0; i < currentList.size(); ++i) {
+                            int rowY = 5 + static_cast<int>(i) * 2;
+                            if (m.y == rowY || m.y == rowY + 1) {
+                                if (static_cast<int>(i) != selectedIndex) {
+                                    selectedIndex = static_cast<int>(i);
+                                    scrollOffset = 0;
+                                }
+                                if (isClick) {
+                                    showSimulationMenu(currentList[selectedIndex].equation, (tabIndex == 1));
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    // 3. Right Column Description / Scrollbar area
+                    else if (m.x >= dividerX + 3 && m.y >= 4 && m.y < screenHeight - 2) {
+                        if (isClick) {
+                            int previewH = screenHeight - 15;
+                            if (previewH < 8) previewH = 8;
+                            int descY = 4 + previewH + 1;
+                            if (m.y >= descY) {
+                                int midY = descY + (screenHeight - descY) / 2;
+                                if (m.y < midY) {
+                                    scrollOffset = std::max(0, scrollOffset - 1);
+                                } else {
+                                    scrollOffset = std::min(maxScrollOffset, scrollOffset + 1);
+                                }
+                            }
+                        }
+                    }
+                    // 4. Footer Bar
+                    else if (m.y >= screenHeight - 2 && isClick) {
+                        if (m.x >= 2 && m.x <= 18) { // [Left/Right] Mode
+                            tabIndex = (tabIndex + 1) % 3; selectedIndex = 0; scrollOffset = 0;
+                        } else if (m.x >= 20 && m.x <= 38) { // [Up/Down] Navigate
+                            selectedIndex = (selectedIndex + 1) % currentList.size(); scrollOffset = 0;
+                        } else if (m.x >= 40 && m.x <= 56) { // [Enter] Select
+                            showSimulationMenu(currentList[selectedIndex].equation, (tabIndex == 1));
+                        } else if (m.x >= 58 && m.x <= 70) { // [C] Custom
+                            bool is3D = (tabIndex == 1);
+                            std::string customEq = handleCustomInput(is3D);
+                            if (!customEq.empty()) {
+                                showSimulationMenu(customEq, is3D);
+                            }
+                        } else if (m.x >= 72) { // [Q] Quit
+                            running = false;
+                        }
+                    }
+                }
             }
         }
 
@@ -1020,6 +1213,11 @@ std::string TUI::handleCustomInput(bool is3D) {
                 inputStr = fullSuggestion;
             }
         } 
+        else if (key == 2000) { // Mouse event
+            if (!fullSuggestion.empty()) {
+                inputStr = fullSuggestion;
+            }
+        }
         else if (key >= 32 && key <= 126) { // Printable
             inputStr += static_cast<char>(key);
         }
@@ -1200,6 +1398,53 @@ void TUI::showSimulationMenu(const std::string& equation, bool is3D) {
                     setupTerminal();
                 } else if (simChoice == 2) {
                     inMenu = false;
+                }
+            }
+            else if (key == 2000) { // Mouse Event
+                const auto& m = lastMouseEvent;
+                bool isClick = (m.button == 0 && !m.isRelease);
+                
+                // Hovering over Left Window (Option 1: Terminal Plotter)
+                if (m.x >= win1X && m.x < win1X + winW && m.y >= winY && m.y < winY + winH) {
+                    simChoice = 0;
+                    if (isClick) {
+                        runTerminalSimulation(equation, is3D);
+                        std::cout << "\033[?1000h\033[?1002h\033[?1003h\033[?1006h" << std::flush;
+                    }
+                }
+                // Hovering over Right Window (Option 2: High-Res OpenGL)
+                else if (m.x >= win2X && m.x < win2X + winW && m.y >= winY && m.y < winY + winH) {
+                    simChoice = 1;
+                    if (isClick) {
+                        restoreTerminal();
+                        std::cout << "\033[?25h" << std::flush;
+                        OpenGLWindow glWin;
+                        glWin.openWindow(equation, is3D);
+                        std::cout << "\033[?25l" << std::flush;
+                        setupTerminal();
+                    }
+                }
+                // Hovering over Go Back Button (Option 3)
+                else if (m.x >= win3X && m.x < win3X + win3W && m.y >= goBackY && m.y < goBackY + goBackH) {
+                    simChoice = 2;
+                    if (isClick) {
+                        inMenu = false;
+                    }
+                }
+                // Footer bar
+                else if (m.y >= screenHeight - 2) {
+                    if (m.x >= footerX + 45 && m.x < footerX + 63) { // [Enter] Launch
+                        simChoice = 0;
+                        if (isClick) {
+                            runTerminalSimulation(equation, is3D);
+                            std::cout << "\033[?1000h\033[?1002h\033[?1003h\033[?1006h" << std::flush;
+                        }
+                    } else if (m.x >= footerX + 63) { // [Q/Esc] Go Back
+                        simChoice = 2;
+                        if (isClick) {
+                            inMenu = false;
+                        }
+                    }
                 }
             }
         }
@@ -1704,6 +1949,6 @@ void TUI::runTerminalSimulation(const std::string& equation, bool is3D) {
         std::this_thread::sleep_for(std::chrono::milliseconds(33));
     }
 
-    // Disable SGR Mouse reporting
-    std::cout << "\033[?1002l\033[?1006l" << std::flush;
+    // Re-enable TUI mouse tracking upon exiting simulation
+    std::cout << "\033[?1000h\033[?1002h\033[?1006h" << std::flush;
 }

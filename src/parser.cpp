@@ -83,7 +83,7 @@ std::vector<Token> MathParser::tokenize(const std::string& expr) {
             continue;
         }
 
-        // 4. Words (Variables, Functions)
+        // 4. Words (Variables, Functions, Constants)
         if (std::isalpha(expr[i])) {
             std::string word = "";
             while (i < len && std::isalpha(expr[i])) {
@@ -97,13 +97,12 @@ std::vector<Token> MathParser::tokenize(const std::string& expr) {
                 word == "abs" || word == "asin" || word == "acos" || 
                 word == "atan") {
                 tokens.push_back({TokenType::Function, word});
+            } else if (word == "pi") {
+                tokens.push_back({TokenType::Number, "pi", 3.14159265358979323846});
+            } else if (word == "e") {
+                tokens.push_back({TokenType::Number, "e", 2.71828182845904523536});
             } else {
-                // Treat each letter as a separate variable/constant if it's not a function?
-                // Actually, let's treat variables as 'x', 'y', 't', 'a', 'b', 'c'.
-                // If the word contains multiple characters that are not a function, we can split it,
-                // or just treat the whole word as a variable.
-                // To support standard algebraic syntax like "ax", let's split it if it has length > 1
-                // and contains letters like x, y, t, a, b, c.
+                // Treat each letter as a separate variable/constant if it's not a function
                 if (word.length() == 1) {
                     tokens.push_back({TokenType::Variable, word});
                 } else {

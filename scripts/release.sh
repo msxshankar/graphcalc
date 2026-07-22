@@ -1,33 +1,22 @@
 #!/bin/sh
 
+# Change directory to repository root
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$REPO_ROOT" || exit 1
+
 # Performs release build
 cmakeRelease () {
     make clean && make
 }
 
-# Packages for debian
-debian () {
-	dpkg-deb --build graphcalc
-
-	mv graphcalc.deb graphcalc/
-	cd graphcalc || return
-}
-
-
 # Build release package
 cmakeRelease
 
 if [ "$1" = "debian" ]; then
-
-  # Creates usr/bin/ if there isn't already one
-  # And copies over binary
-  DIRECTORY=usr/bin/
-  if [ ! -d "$DIRECTORY" ]; then
-    mkdir -p usr/bin/
-  fi
-  cp graphcalc usr/bin/
-
-  # Creates deb and returns to graphcalc directory
-  cd ..
-	debian
+    mkdir -p usr/bin
+    cp graphcalc usr/bin/
+    dpkg-deb --build . graphcalc.deb
+    echo "Created graphcalc.deb successfully."
 fi
+
